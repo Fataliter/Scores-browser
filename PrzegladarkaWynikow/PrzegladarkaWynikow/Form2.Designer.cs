@@ -33,14 +33,25 @@
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series9 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series10 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.dataGraph = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.Training = new System.Windows.Forms.Button();
             this.Mission1 = new System.Windows.Forms.Button();
             this.Mission2 = new System.Windows.Forms.Button();
             this.Mission3 = new System.Windows.Forms.Button();
             this.Mission4 = new System.Windows.Forms.Button();
+            this.bigDataGraph = new System.Windows.Forms.DataVisualization.Charting.Chart();
             ((System.ComponentModel.ISupportInitialize)(this.dataGraph)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.bigDataGraph)).BeginInit();
             this.SuspendLayout();
             // 
             // dataGraph
@@ -49,11 +60,10 @@
             this.dataGraph.ChartAreas.Add(chartArea1);
             legend1.Name = "Legend1";
             this.dataGraph.Legends.Add(legend1);
-            this.dataGraph.Location = new System.Drawing.Point(13, 44);
+            this.dataGraph.Location = new System.Drawing.Point(6, 70);
             this.dataGraph.Name = "dataGraph";
             series1.ChartArea = "ChartArea1";
             series1.Color = System.Drawing.Color.Blue;
-            series1.IsValueShownAsLabel = true;
             series1.Legend = "Legend1";
             series1.Name = "timeToHit";
             series1.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Double;
@@ -63,10 +73,22 @@
             series3.ChartArea = "ChartArea1";
             series3.Legend = "Legend1";
             series3.Name = "points";
+            series4.ChartArea = "ChartArea1";
+            series4.Legend = "Legend1";
+            series4.Name = "timeOnLeftPillow";
+            series5.ChartArea = "ChartArea1";
+            series5.Legend = "Legend1";
+            series5.Name = "timeOnRightPillow";
+            series6.ChartArea = "ChartArea1";
+            series6.Legend = "Legend1";
+            series6.Name = "timeOnRearPillow";
             this.dataGraph.Series.Add(series1);
             this.dataGraph.Series.Add(series2);
             this.dataGraph.Series.Add(series3);
-            this.dataGraph.Size = new System.Drawing.Size(775, 394);
+            this.dataGraph.Series.Add(series4);
+            this.dataGraph.Series.Add(series5);
+            this.dataGraph.Series.Add(series6);
+            this.dataGraph.Size = new System.Drawing.Size(775, 265);
             this.dataGraph.TabIndex = 0;
             this.dataGraph.Text = "dataGraph";
             title1.Name = "Title";
@@ -101,6 +123,7 @@
             this.Mission2.TabIndex = 3;
             this.Mission2.Text = "Misja 2";
             this.Mission2.UseVisualStyleBackColor = true;
+            this.Mission2.Click += new System.EventHandler(this.Mission2_Click);
             // 
             // Mission3
             // 
@@ -110,6 +133,7 @@
             this.Mission3.TabIndex = 4;
             this.Mission3.Text = "Misja 3";
             this.Mission3.UseVisualStyleBackColor = true;
+            this.Mission3.Click += new System.EventHandler(this.Mission3_Click);
             // 
             // Mission4
             // 
@@ -119,12 +143,46 @@
             this.Mission4.TabIndex = 5;
             this.Mission4.Text = "Misja 4";
             this.Mission4.UseVisualStyleBackColor = true;
+            this.Mission4.Click += new System.EventHandler(this.Mission4_Click);
+            // 
+            // bigDataGraph
+            // 
+            chartArea2.Name = "ChartArea1";
+            this.bigDataGraph.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            this.bigDataGraph.Legends.Add(legend2);
+            this.bigDataGraph.Location = new System.Drawing.Point(6, 342);
+            this.bigDataGraph.Name = "bigDataGraph";
+            series7.ChartArea = "ChartArea1";
+            series7.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series7.Legend = "Legend1";
+            series7.Name = "pressOnLeftLeg";
+            series8.ChartArea = "ChartArea1";
+            series8.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series8.Legend = "Legend1";
+            series8.Name = "pressOnRightLeg";
+            series9.ChartArea = "ChartArea1";
+            series9.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series9.Legend = "Legend1";
+            series9.Name = "pressOnLeftPillow";
+            series10.ChartArea = "ChartArea1";
+            series10.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series10.Legend = "Legend1";
+            series10.Name = "pressOnRightPillow";
+            this.bigDataGraph.Series.Add(series7);
+            this.bigDataGraph.Series.Add(series8);
+            this.bigDataGraph.Series.Add(series9);
+            this.bigDataGraph.Series.Add(series10);
+            this.bigDataGraph.Size = new System.Drawing.Size(775, 279);
+            this.bigDataGraph.TabIndex = 6;
+            this.bigDataGraph.Text = "bigDataGraph";
             // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(793, 633);
+            this.Controls.Add(this.bigDataGraph);
             this.Controls.Add(this.Mission4);
             this.Controls.Add(this.Mission3);
             this.Controls.Add(this.Mission2);
@@ -136,6 +194,7 @@
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form2_FormClosed);
             this.Load += new System.EventHandler(this.Form2_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGraph)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.bigDataGraph)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -147,5 +206,6 @@
         private System.Windows.Forms.Button Mission2;
         private System.Windows.Forms.Button Mission3;
         private System.Windows.Forms.Button Mission4;
+        private System.Windows.Forms.DataVisualization.Charting.Chart bigDataGraph;
     }
 }
