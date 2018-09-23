@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -96,6 +97,15 @@ namespace PrzegladarkaWynikow
                         dataGraph.Titles["Title"].Text += " w minutach: " + timePlayed;
                         break;
                     case 2:
+                        var chartArea = dataGraph.ChartAreas["ChartArea1"];
+                        chartArea.AxisX.Minimum = 0;
+                        chartArea.AxisX.Maximum = dataLineSplitted.Length;
+                        chartArea.CursorX.AutoScroll = true;
+                        chartArea.AxisX.ScaleView.Zoomable = true;
+                        chartArea.AxisX.ScaleView.SizeType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+                        chartArea.AxisX.ScaleView.Zoom(0, 6);
+                        chartArea.AxisX.ScrollBar.ButtonStyle = System.Windows.Forms.DataVisualization.Charting.ScrollBarButtonStyles.SmallScroll;
+                        chartArea.AxisX.ScaleView.SmallScrollSize = dataLineSplitted.Length;
                         Draw("timeToHit", dataLineSplitted);
                         dataGraph.Series["timeToHit"].Name = "Czas do trafienia";
                         break;
@@ -120,6 +130,15 @@ namespace PrzegladarkaWynikow
                         dataGraph.Series["timeOnRearPillow"].Name = "Czas na tylnej poduszce";
                         break;
                     case 8:
+                        var bigChartArea = bigDataGraph.ChartAreas["ChartArea1"];
+                        bigChartArea.AxisX.Minimum = 0;
+                        bigChartArea.AxisX.Maximum = Math.Ceiling(dataLineSplitted.Length / 5f);
+                        bigChartArea.CursorX.AutoScroll = true;
+                        bigChartArea.AxisX.ScaleView.Zoomable = true;
+                        bigChartArea.AxisX.ScaleView.SizeType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+                        bigChartArea.AxisX.ScaleView.Zoom(0, 240);
+                        bigChartArea.AxisX.ScrollBar.ButtonStyle = System.Windows.Forms.DataVisualization.Charting.ScrollBarButtonStyles.SmallScroll;
+                        bigChartArea.AxisX.ScaleView.SmallScrollSize = Math.Ceiling(dataLineSplitted.Length / 5f);
                         DrawSecond("pressOnLeftLeg", dataLineSplitted);
                         bigDataGraph.Series["pressOnLeftLeg"].Name = "Nacisk - lewa noga";
                         break;

@@ -23,63 +23,7 @@ namespace PrzegladarkaWynikow
                 listBox1.Items.Add(Path.GetFileName(file));
             }
         }
-
-        #region old read data
-        string[] ReadData()
-        {
-            int counter = 5;
-            string line;
-            string[] data = new string[25];
-            StreamReader file = new System.IO.StreamReader(@"C:\Users\" + userName + @"\AppData\LocalLow\DefaultCompany\Archery\Wyniki\" + fileName);
-            while ((line = file.ReadLine()) != null)
-            {
-                if (counter % 5 == 0)
-                {
-                    if (line == "training")
-                    {
-                        data[0] = line;
-                        counter = 1;
-                        continue;
-                    }
-                    else if (line == "mission1")
-                    {
-                        data[5] = line;
-                        counter = 6;
-                        continue;
-                    }
-                    else if (line == "mission2")
-                    {
-                        data[10] = line;
-                        counter = 11;
-                        continue;
-                    }
-                    else if (line == "mission3")
-                    {
-                        data[15] = line;
-                        counter = 16;
-                        continue;
-                    }
-                    else if (line == "mission4")
-                    {
-                        data[20] = line;
-                        counter = 21;
-                        continue;
-                    }
-                }
-                if ((counter-1) % 5 == 0)
-                {
-                    data[counter] = data[counter] + line + ",";
-                    counter++;
-                    continue;
-                }
-                    data[counter] += line;
-                    counter++;
-            }
-            file.Close();
-            return data;
-        }
-        #endregion
-
+        
         string[][][] ReadDataNew()
         {
             int[] counter = new int[5];
