@@ -83,6 +83,7 @@ namespace PrzegladarkaWynikow
         {
             dataGraph.Series.Clear();
             bigDataGraph.Series.Clear();
+            float[] timeToHitFloat = new float[data[whichMission][whichSession][2].Length];
             for (int i = 0; i < 12; i++)
             {
                 string[] dataLineSplitted = data[whichMission][whichSession][i].Split(new char[] { ',' });
@@ -97,62 +98,77 @@ namespace PrzegladarkaWynikow
                         dataGraph.Titles["Title"].Text += " w minutach: " + timePlayed;
                         break;
                     case 2:
-                        var chartArea = dataGraph.ChartAreas["ChartArea1"];
-                        chartArea.AxisX.Minimum = 0;
-                        chartArea.AxisX.Maximum = dataLineSplitted.Length;
-                        chartArea.CursorX.AutoScroll = true;
-                        chartArea.AxisX.ScaleView.Zoomable = true;
-                        chartArea.AxisX.ScaleView.SizeType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
-                        chartArea.AxisX.ScaleView.Zoom(0, 6);
-                        chartArea.AxisX.ScrollBar.ButtonStyle = System.Windows.Forms.DataVisualization.Charting.ScrollBarButtonStyles.SmallScroll;
-                        chartArea.AxisX.ScaleView.SmallScrollSize = dataLineSplitted.Length;
-                        Draw("timeToHit", dataLineSplitted);
-                        dataGraph.Series["timeToHit"].Name = "Czas do trafienia";
+                        for (int j = 0; j < dataLineSplitted.Length - 1; j++)
+                        {
+                            timeToHitFloat[j] = float.Parse(dataLineSplitted[j].Replace(".", ","));
+                        }
                         break;
                     case 3:
+                        var chartArea = dataGraph.ChartAreas["ChartArea1"];
+                        chartArea.AxisX.Minimum = 0;
+                        chartArea.AxisX.Maximum = Math.Ceiling(dataLineSplitted.Length / 5f);
+                        chartArea.CursorX.AutoScroll = true;
+                        chartArea.AxisX.Title = "czas [s]";
+                        chartArea.AxisY.Title = "kąt [°]";
+                        chartArea.AxisX.ScaleView.Zoomable = true;
+                        chartArea.AxisX.ScaleView.SizeType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+                        chartArea.AxisX.ScaleView.Zoom(0, 40);
+                        chartArea.AxisX.ScrollBar.ButtonStyle = System.Windows.Forms.DataVisualization.Charting.ScrollBarButtonStyles.SmallScroll;
+                        chartArea.AxisX.ScaleView.SmallScrollSize = Math.Ceiling(dataLineSplitted.Length / 5f);
+                        chartArea.AxisX.Interval = 5;
                         Draw("angle", dataLineSplitted);
-                        dataGraph.Series["angle"].Name = "Kąt obrotu";
+                        dataGraph.Series["angle"].Name = "Kąt obrotu postaci";
                         break;
                     case 4:
-                        Draw("points", dataLineSplitted);
-                        dataGraph.Series["points"].Name = "Punkty";
+                        Draw("targetLocation", dataLineSplitted);
+                        dataGraph.Series["targetLocation"].Name = "Położenie celu";
                         break;
                     case 5:
-                        Draw("timeOnLeftPillow", dataLineSplitted);
-                        dataGraph.Series["timeOnLeftPillow"].Name = "Czas na lewej poduszce";
+                        dataGraph.Series.Add("hitAngle");
+                        dataGraph.Series["hitAngle"].BorderWidth = 2;
+                        dataGraph.Series["hitAngle"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+                        for (int j = 0; j < dataLineSplitted.Length - 1; j++)
+                        {
+                            float dataToDrawFloat = float.Parse(dataLineSplitted[j].Replace(".", ","));
+                            dataGraph.Series["hitAngle"].Points.AddXY(timeToHitFloat[j], dataToDrawFloat);
+                        }
+                        dataGraph.Series["hitAngle"].Name = "Trafienie";
                         break;
                     case 6:
-                        Draw("timeOnRightPillow", dataLineSplitted);
-                        dataGraph.Series["timeOnRightPillow"].Name = "Czas na prawej poduszce";
+                        /*Draw("points", dataLineSplitted);
+                        dataGraph.Series["points"].Name = "Punkty";*/
                         break;
                     case 7:
-                        Draw("timeOnRearPillow", dataLineSplitted);
-                        dataGraph.Series["timeOnRearPillow"].Name = "Czas na tylnej poduszce";
-                        break;
-                    case 8:
                         var bigChartArea = bigDataGraph.ChartAreas["ChartArea1"];
                         bigChartArea.AxisX.Minimum = 0;
                         bigChartArea.AxisX.Maximum = Math.Ceiling(dataLineSplitted.Length / 5f);
+                        bigChartArea.AxisX.Title = "czas [s]";
+                        bigChartArea.AxisY.Title = "nacisk [%]";
                         bigChartArea.CursorX.AutoScroll = true;
                         bigChartArea.AxisX.ScaleView.Zoomable = true;
                         bigChartArea.AxisX.ScaleView.SizeType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
-                        bigChartArea.AxisX.ScaleView.Zoom(0, 240);
+                        bigChartArea.AxisX.ScaleView.Zoom(0, 40);
                         bigChartArea.AxisX.ScrollBar.ButtonStyle = System.Windows.Forms.DataVisualization.Charting.ScrollBarButtonStyles.SmallScroll;
                         bigChartArea.AxisX.ScaleView.SmallScrollSize = Math.Ceiling(dataLineSplitted.Length / 5f);
+                        bigChartArea.AxisX.Interval = 5;
                         DrawSecond("pressOnLeftLeg", dataLineSplitted);
                         bigDataGraph.Series["pressOnLeftLeg"].Name = "Nacisk - lewa noga";
                         break;
-                    case 9:
+                    case 8:
                         DrawSecond("pressOnRightLeg", dataLineSplitted);
                         bigDataGraph.Series["pressOnRightLeg"].Name = "Nacisk - prawa noga";
                         break;
-                    case 10:
+                    case 9:
                         DrawSecond("pressOnLeftPillow", dataLineSplitted);
                         bigDataGraph.Series["pressOnLeftPillow"].Name = "Nacisk - lewa poduszka";
                         break;
-                    case 11:
+                    case 10:
                         DrawSecond("pressOnRightPillow", dataLineSplitted);
                         bigDataGraph.Series["pressOnRightPillow"].Name = "Nacisk - prawa poduszka";
+                        break;
+                    case 11:
+                        DrawSecond("pressOnRearPillow", dataLineSplitted);
+                        bigDataGraph.Series["pressOnRearPillow"].Name = "Nacisk - tylna poduszka";
                         break;
                 }
             }
@@ -161,10 +177,12 @@ namespace PrzegladarkaWynikow
         private void Draw(string series, string[] dataSplitted)
         {
             dataGraph.Series.Add(series);
+            dataGraph.Series[series].BorderWidth = 2;
+            dataGraph.Series[series].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
             for (int i = 0; i < dataSplitted.Length - 1; i++)
             {
                 float dataToDrawFloat = float.Parse(dataSplitted[i].Replace(".", ","));
-                dataGraph.Series[series].Points.Add(dataToDrawFloat);
+                dataGraph.Series[series].Points.AddXY(i * 0.2f, dataToDrawFloat);
             }
         }
 
