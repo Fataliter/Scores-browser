@@ -53,7 +53,7 @@ namespace PrzegladarkaWynikow
                         if (i == 11)
                             counter[0]++;
                     }
-                    else if (singleMissionSplitted[0] == "village")
+                    else if (singleMissionSplitted[0] == "mission1")
                     {
                         results[1][counter[1]][i] = singleMissionSplitted[i];
                         if (i == 11)
