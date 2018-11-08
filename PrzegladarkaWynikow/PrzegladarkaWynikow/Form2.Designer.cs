@@ -90,6 +90,7 @@
             title1.Name = "Title";
             title1.Text = "Data";
             this.dataGraph.Titles.Add(title1);
+            this.dataGraph.AxisViewChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(this.dataGraph_AxisViewChanged);
             // 
             // Training
             // 
@@ -177,6 +178,7 @@
             this.bigDataGraph.Size = new System.Drawing.Size(865, 279);
             this.bigDataGraph.TabIndex = 6;
             this.bigDataGraph.Text = "bigDataGraph";
+            this.bigDataGraph.AxisViewChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(this.bigDataGraph_AxisViewChanged);
             // 
             // Form2
             // 
@@ -193,7 +195,6 @@
             this.Name = "Form2";
             this.Text = "Form2";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form2_FormClosed);
-            this.Load += new System.EventHandler(this.Form2_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGraph)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.bigDataGraph)).EndInit();
             this.ResumeLayout(false);

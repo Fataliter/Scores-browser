@@ -13,6 +13,9 @@ namespace PrzegladarkaWynikow
         public Form2()
         {
             InitializeComponent();
+            this.Size = Screen.PrimaryScreen.WorkingArea.Size;
+            this.WindowState = FormWindowState.Maximized;
+            Debug.WriteLine(this.Size);
         }
 
         private void Check(string[][][] data)
@@ -104,6 +107,9 @@ namespace PrzegladarkaWynikow
                         }
                         break;
                     case 3:
+                        dataGraph.Location = new Point(0,70);
+                        int height = Convert.ToInt32(0.45 * this.Size.Height);
+                        dataGraph.Size = new Size(this.Size.Width,height);
                         var chartArea = dataGraph.ChartAreas["ChartArea1"];
                         chartArea.AxisX.Minimum = 0;
                         chartArea.AxisX.Maximum = Math.Ceiling(dataLineSplitted.Length / 5f);
@@ -139,6 +145,10 @@ namespace PrzegladarkaWynikow
                         dataGraph.Series["points"].Name = "Punkty";*/
                         break;
                     case 7:
+                        int prevGraphHeight = Convert.ToInt32(0.45 * this.Size.Height) + 70;
+                        bigDataGraph.Location = new Point(0, prevGraphHeight);
+                        int heightSecondGraph = Convert.ToInt32(0.39 * this.Size.Height);
+                        bigDataGraph.Size = new Size(this.Size.Width, heightSecondGraph);
                         var bigChartArea = bigDataGraph.ChartAreas["ChartArea1"];
                         bigChartArea.AxisX.Minimum = 0;
                         bigChartArea.AxisX.Maximum = Math.Ceiling(dataLineSplitted.Length / 5f);
@@ -260,9 +270,30 @@ namespace PrzegladarkaWynikow
             }
         }
 
-        private void Form2_Load(object sender, EventArgs e)
+        private void dataGraph_AxisViewChanged(object sender, System.Windows.Forms.DataVisualization.Charting.ViewEventArgs e)
         {
+            var chartArea = dataGraph.ChartAreas["ChartArea1"];
+            var bigChartArea = bigDataGraph.ChartAreas["ChartArea1"];
 
+            var ax1 = chartArea.AxisX;
+            var ax2 = bigChartArea.AxisX;
+            if (e.Axis == ax1)
+            {
+                ax2.ScaleView.Position = ax1.ScaleView.Position;
+            }
+        }
+
+        private void bigDataGraph_AxisViewChanged(object sender, System.Windows.Forms.DataVisualization.Charting.ViewEventArgs e)
+        {
+            var chartArea = dataGraph.ChartAreas["ChartArea1"];
+            var bigChartArea = bigDataGraph.ChartAreas["ChartArea1"];
+
+            var ax1 = chartArea.AxisX;
+            var ax2 = bigChartArea.AxisX;
+            if (e.Axis == ax2)
+            {
+                ax1.ScaleView.Position = ax2.ScaleView.Position;
+            }
         }
     }
 }
