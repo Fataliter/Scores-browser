@@ -33,8 +33,8 @@ namespace PrzegladarkaWynikow
                 results[i] = new string[10][];
                 for (int j = 0; j < 10; j++)
                 {
-                    results[i][j] = new string[12];
-                    for (int k = 0; k < 12; k++)
+                    results[i][j] = new string[15];
+                    for (int k = 0; k < 15; k++)
                         results[i][j][k] = "";
                 }
             }
@@ -50,31 +50,31 @@ namespace PrzegladarkaWynikow
                     if (singleMissionSplitted[0] == "training")
                     {
                         results[0][counter[0]][i] = singleMissionSplitted[i];
-                        if (i == 11)
+                        if (i == 14)
                             counter[0]++;
                     }
                     else if (singleMissionSplitted[0] == "mission1")
                     {
                         results[1][counter[1]][i] = singleMissionSplitted[i];
-                        if (i == 11)
+                        if (i == 14)
                             counter[1]++;
                     }
                     else if (singleMissionSplitted[0] == "mission2")
                     {
                         results[2][counter[2]][i] = singleMissionSplitted[i];
-                        if (i == 11)
+                        if (i == 14)
                             counter[2]++;
                     }
                     else if (singleMissionSplitted[0] == "mission3")
                     {
                         results[3][counter[3]][i] = singleMissionSplitted[i];
-                        if (i == 11)
+                        if (i == 14)
                             counter[3]++;
                     }
                     else if (singleMissionSplitted[0] == "mission4")
                     {
                         results[4][counter[4]][i] = singleMissionSplitted[i];
-                        if (i == 11)
+                        if (i == 14)
                             counter[4]++;
                     }
                 }

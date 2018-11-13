@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
@@ -9,13 +10,13 @@ namespace PrzegladarkaWynikow
     {
         public static int whichMission;
         Button[] buttons = new Button[10];
+        public static string[][] settingTime;
 
         public Form2()
         {
             InitializeComponent();
             this.Size = Screen.PrimaryScreen.WorkingArea.Size;
             this.WindowState = FormWindowState.Maximized;
-            Debug.WriteLine(this.Size);
         }
 
         private void Check(string[][][] data)
@@ -48,6 +49,8 @@ namespace PrzegladarkaWynikow
                     buttons[i].Click += new EventHandler(Draw_Click);
                     this.Controls.Add(newButton);
                 }
+
+                SettingTimeData(whichMission, length, data);
 
                 DrawGraph(whichMission, 0, data);
             }
@@ -82,12 +85,29 @@ namespace PrzegladarkaWynikow
             }
         }
 
+        void SettingTimeData(int whichMission, int length, string[][][] data)
+        {
+            settingTime = new string[length][];
+            for (int i = 0; i < length; i++)
+            {
+                settingTime[i] = new string[4];
+            }
+
+            for (int i = 0; i < length; i++)
+            {
+                settingTime[i][0] = data[whichMission][i][3];
+                settingTime[i][1] = data[whichMission][i][4];
+                settingTime[i][2] = data[whichMission][i][12];
+                settingTime[i][3] = data[whichMission][i][13];
+            }
+        }
+
         void DrawGraph(int whichMission, int whichSession, string[][][] data)
         {
             dataGraph.Series.Clear();
             bigDataGraph.Series.Clear();
             float[] timeToHitFloat = new float[data[whichMission][whichSession][2].Length];
-            for (int i = 0; i < 12; i++)
+            for (int i = 0; i < 15; i++)
             {
                 string[] dataLineSplitted = data[whichMission][whichSession][i].Split(new char[] { ',' });
                 switch (i)
@@ -127,6 +147,7 @@ namespace PrzegladarkaWynikow
                         break;
                     case 4:
                         Draw("targetLocation", dataLineSplitted);
+                        dataGraph.Series["targetLocation"].Color = Color.Green;
                         dataGraph.Series["targetLocation"].Name = "Położenie celu";
                         break;
                     case 5:
@@ -179,6 +200,30 @@ namespace PrzegladarkaWynikow
                     case 11:
                         DrawSecond("pressOnRearPillow", dataLineSplitted);
                         bigDataGraph.Series["pressOnRearPillow"].Name = "Nacisk - tylna poduszka";
+                        break;
+                    case 12:
+                        dataGraph.Series.Add("targetAngleLeft");
+                        dataGraph.Series["targetAngleLeft"].BorderWidth = 1;
+                        dataGraph.Series["targetAngleLeft"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+                        dataGraph.Series["targetAngleLeft"].Color = Color.Red;
+                        for (int j = 0; j < dataLineSplitted.Length - 1; j++)
+                        {
+                            float dataToDrawFloat = float.Parse(dataLineSplitted[j].Replace(".", ","));
+                            dataGraph.Series["targetAngleLeft"].Points.AddXY(j * 0.2f, dataToDrawFloat);
+                        }
+                        dataGraph.Series["targetAngleLeft"].Name = "Lewa strona";
+                        break;
+                    case 13:
+                        dataGraph.Series.Add("targetAngleRight");
+                        dataGraph.Series["targetAngleRight"].BorderWidth = 1;
+                        dataGraph.Series["targetAngleRight"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+                        dataGraph.Series["targetAngleRight"].Color = Color.Red;
+                        for (int j = 0; j < dataLineSplitted.Length - 1; j++)
+                        {
+                            float dataToDrawFloat = float.Parse(dataLineSplitted[j].Replace(".", ","));
+                            dataGraph.Series["targetAngleRight"].Points.AddXY(j * 0.2f, dataToDrawFloat);
+                        }
+                        dataGraph.Series["targetAngleRight"].Name = "Prawa strona";
                         break;
                 }
             }
@@ -245,6 +290,64 @@ namespace PrzegladarkaWynikow
         {
             Button buttonMission4 = sender as Button;
             WhichClicked(buttonMission4.Name);
+        }
+
+        private void SettingTime_Click(object sender, EventArgs e)
+        {
+            int lengthFirst = settingTime.Length;
+            for (int i = 0; i < lengthFirst; i++)
+            {
+                string[] playerAngle = settingTime[i][0].Split(',');
+                string[] target = settingTime[i][1].Split(',');
+                string[] targetLeft = settingTime[i][2].Split(',');
+                string[] targetRight = settingTime[i][3].Split(',');
+                float[] playerAngleFloat = ParseToFloat(playerAngle);
+                float[] targetFloat = ParseToFloat(target);
+                float[] targetLeftFloat = ParseToFloat(targetLeft);
+                float[] targetRightFloat = ParseToFloat(targetRight);
+
+                int lengthSecond = playerAngle.Length - 1;
+                float prevTarget = targetFloat[0];
+                float timeCounter = 0;
+
+                for (int j = 1; j < lengthSecond; j++)
+                {
+                    if (targetFloat[j] < -5f || targetFloat[j] > 5f)
+                    {
+                        if (prevTarget != targetFloat[j])
+                        {
+                            Debug.WriteLine(timeCounter);
+                            timeCounter = 0f;
+                        }
+                        if (targetFloat[j] > -50f && targetFloat[j] < -30f)
+                        {
+                            if (playerAngleFloat[j] > targetLeftFloat[j])
+                            {
+                                timeCounter += 0.2f;
+                            }
+                        }
+                        else if (targetFloat[j] < 50 && targetFloat[j] > 30)
+                        {
+                            if (playerAngleFloat[j] < targetRightFloat[j])
+                            {
+                                timeCounter += 0.2f;
+                            }
+                        }
+                        prevTarget = targetFloat[j];
+                    }
+                }
+            }
+        }
+
+        float[] ParseToFloat(string[] data)
+        {
+            int length = data.Length - 1;
+            float[] dataFloat = new float[length];
+            for (int i = 0; i < length; i++)
+            {
+                dataFloat[i] = Convert.ToSingle(Math.Round(double.Parse(data[i].Replace('.', ',')), 1));
+            }
+            return dataFloat;
         }
 
         private void WhichClicked(string button_name)
