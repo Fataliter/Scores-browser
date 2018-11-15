@@ -295,6 +295,7 @@ namespace PrzegladarkaWynikow
         private void SettingTime_Click(object sender, EventArgs e)
         {
             int lengthFirst = settingTime.Length;
+            int counter = 0;
             for (int i = 0; i < lengthFirst; i++)
             {
                 string[] playerAngle = settingTime[i][0].Split(',');
@@ -306,17 +307,35 @@ namespace PrzegladarkaWynikow
                 float[] targetLeftFloat = ParseToFloat(targetLeft);
                 float[] targetRightFloat = ParseToFloat(targetRight);
 
-                int lengthSecond = playerAngle.Length - 1;
+                int lengthSecond = target.Length - 1;
                 float prevTarget = targetFloat[0];
                 float timeCounter = 0;
-
+                Debug.WriteLine("kolejny");
+                float timetoStart = 0;
+                bool fakeInfo = false;
                 for (int j = 1; j < lengthSecond; j++)
                 {
+                    if ((playerAngleFloat[j] < 130 || playerAngleFloat[j] > 150) && j == 0)
+                    {
+                        fakeInfo = true;
+                    }
+                    if (timetoStart > 14.7f && timetoStart < 14.9f)
+                    {
+                        timetoStart = 0;
+                        fakeInfo = false;
+                    }
+                    if (fakeInfo)
+                    {
+                        timetoStart += 0.2f;
+                        continue;
+                    }
+
                     if (targetFloat[j] < -5f || targetFloat[j] > 5f)
                     {
-                        if (prevTarget != targetFloat[j])
+                        if (prevTarget != targetFloat[j] || j == lengthSecond - 1)
                         {
                             Debug.WriteLine(timeCounter);
+                            counter++;
                             timeCounter = 0f;
                         }
                         if (targetFloat[j] > -50f && targetFloat[j] < -30f)
@@ -337,6 +356,7 @@ namespace PrzegladarkaWynikow
                     }
                 }
             }
+            Debug.WriteLine(counter);
         }
 
         float[] ParseToFloat(string[] data)
