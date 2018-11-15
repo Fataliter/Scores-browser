@@ -296,6 +296,12 @@ namespace PrzegladarkaWynikow
         {
             int lengthFirst = settingTime.Length;
             int counter = 0;
+
+            List<float> averageCloseOneMission = new List<float>();
+            List<float> averageFarOneMission = new List<float>();
+
+            List<float> timeClose = new List<float>();
+            List<float> timeFar = new List<float>();
             for (int i = 0; i < lengthFirst; i++)
             {
                 string[] playerAngle = settingTime[i][0].Split(',');
@@ -306,13 +312,19 @@ namespace PrzegladarkaWynikow
                 float[] targetFloat = ParseToFloat(target);
                 float[] targetLeftFloat = ParseToFloat(targetLeft);
                 float[] targetRightFloat = ParseToFloat(targetRight);
+                Debug.WriteLine("kolejny");
 
                 int lengthSecond = target.Length - 1;
+                int targetNumber = 0;
                 float prevTarget = targetFloat[0];
                 float timeCounter = 0;
-                Debug.WriteLine("kolejny");
                 float timetoStart = 0;
                 bool fakeInfo = false;
+                bool canEnter = true;
+
+                List<float> closeOneMission = new List<float>();
+                List<float> farOneMission = new List<float>();
+
                 for (int j = 1; j < lengthSecond; j++)
                 {
                     if ((playerAngleFloat[j] < 130 || playerAngleFloat[j] > 150) && j == 0)
@@ -336,27 +348,72 @@ namespace PrzegladarkaWynikow
                         {
                             Debug.WriteLine(timeCounter);
                             counter++;
+                            canEnter = true;
+                            if (targetNumber < 5)
+                            {
+                                timeClose.Add(timeCounter);
+                                closeOneMission.Add(timeCounter);
+                            }
+                            else
+                            {
+                                timeFar.Add(timeCounter);
+                                farOneMission.Add(timeCounter);
+                            }
+                            targetNumber++;
                             timeCounter = 0f;
                         }
                         if (targetFloat[j] > -50f && targetFloat[j] < -30f)
                         {
-                            if (playerAngleFloat[j] > targetLeftFloat[j])
+                            if (playerAngleFloat[j] > targetLeftFloat[j] && canEnter)
                             {
                                 timeCounter += 0.2f;
                             }
+                            else
+                                canEnter = false;
                         }
                         else if (targetFloat[j] < 50 && targetFloat[j] > 30)
                         {
-                            if (playerAngleFloat[j] < targetRightFloat[j])
+                            if (playerAngleFloat[j] < targetRightFloat[j] && canEnter)
                             {
                                 timeCounter += 0.2f;
                             }
+                            else
+                                canEnter = false;
                         }
                         prevTarget = targetFloat[j];
                     }
                 }
+                float average = 0;
+                closeOneMission.ForEach(item => average += item);
+                average /= closeOneMission.Count;
+                averageCloseOneMission.Add(average);
+
+                average = 0;
+                farOneMission.ForEach(item => average += item);
+                average /= farOneMission.Count;
+                averageFarOneMission.Add(average);
             }
-            Debug.WriteLine(counter);
+            float averageClose = 0;
+            timeClose.ForEach(item => averageClose += item);
+            averageClose /= timeClose.Count;
+
+            float averageFar = 0;
+            timeFar.ForEach(item => averageFar += item);
+            averageFar /= timeFar.Count;
+
+            string timesClose = "";
+            for (int i = 1; i <= averageCloseOneMission.Count; i++)
+            {
+                timesClose += i + ". " + averageCloseOneMission[i-1] + " s     ";
+            }
+
+            string timesFar = "";
+            for (int i = 1; i <= averageFarOneMission.Count; i++)
+            {
+                timesFar += i + ". " + averageFarOneMission[i - 1] + " s     ";
+            }
+
+            MessageBox.Show("average close: " + averageClose + "    average far: " + averageFar + "\n" + timesClose + "\n" + timesFar);
         }
 
         float[] ParseToFloat(string[] data)
