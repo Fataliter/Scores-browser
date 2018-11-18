@@ -11,6 +11,11 @@ namespace PrzegladarkaWynikow
         public static int whichMission;
         Button[] buttons = new Button[10];
         public static string[][] settingTime;
+        public static string[][] pillowsTime;
+        public static float[][][] pillowsPercentage;
+        public static float[] playerAngle;
+        public static bool settingTimeBool = false;
+        public static bool pillowsTimeBool = false;
 
         public Form2()
         {
@@ -51,6 +56,7 @@ namespace PrzegladarkaWynikow
                 }
 
                 SettingTimeData(whichMission, length, data);
+                PillowsTimeData(whichMission, length, data);
 
                 DrawGraph(whichMission, 0, data);
             }
@@ -90,7 +96,7 @@ namespace PrzegladarkaWynikow
             settingTime = new string[length][];
             for (int i = 0; i < length; i++)
             {
-                settingTime[i] = new string[4];
+                settingTime[i] = new string[5];
             }
 
             for (int i = 0; i < length; i++)
@@ -99,7 +105,43 @@ namespace PrzegladarkaWynikow
                 settingTime[i][1] = data[whichMission][i][4];
                 settingTime[i][2] = data[whichMission][i][12];
                 settingTime[i][3] = data[whichMission][i][13];
+                settingTime[i][4] = data[whichMission][i][14];
             }
+
+            settingTimeBool = true;
+        }
+
+        void PillowsTimeData(int whichMission, int length, string[][][] data)
+        {
+            playerAngle = new float[length];
+
+            pillowsTime = new string[length][];
+            for (int i = 0; i < length; i++)
+            {
+                pillowsTime[i] = new string[5];
+            }
+
+            for (int i = 0; i < length; i++)
+            {
+                pillowsTime[i][0] = data[whichMission][i][9];
+                pillowsTime[i][1] = data[whichMission][i][10];
+                pillowsTime[i][2] = data[whichMission][i][11];
+                pillowsTime[i][3] = data[whichMission][i][1];
+                pillowsTime[i][4] = data[whichMission][i][14];
+                playerAngle[i] = Convert.ToSingle(Math.Round(double.Parse((data[whichMission][i][3].Split(',')[0]).Replace('.', ',')), 1));
+            }
+
+            pillowsPercentage = new float[3][][];
+            for (int i = 0; i < 3; i++)
+            {
+                pillowsPercentage[i] = new float[length][];
+                for (int j = 0; j < length; j++)
+                {
+                    pillowsPercentage[i][j] = new float[11];
+                }
+            }
+
+            pillowsTimeBool = true;
         }
 
         void DrawGraph(int whichMission, int whichSession, string[][][] data)
@@ -292,128 +334,329 @@ namespace PrzegladarkaWynikow
             WhichClicked(buttonMission4.Name);
         }
 
-        private void SettingTime_Click(object sender, EventArgs e)
+        private void PillowsTimePercent_Click(object sender, EventArgs e)
         {
-            int lengthFirst = settingTime.Length;
-            int counter = 0;
-
-            List<float> averageCloseOneMission = new List<float>();
-            List<float> averageFarOneMission = new List<float>();
-
-            List<float> timeClose = new List<float>();
-            List<float> timeFar = new List<float>();
-            for (int i = 0; i < lengthFirst; i++)
+            if (pillowsTimeBool == true)
             {
-                string[] playerAngle = settingTime[i][0].Split(',');
-                string[] target = settingTime[i][1].Split(',');
-                string[] targetLeft = settingTime[i][2].Split(',');
-                string[] targetRight = settingTime[i][3].Split(',');
-                float[] playerAngleFloat = ParseToFloat(playerAngle);
-                float[] targetFloat = ParseToFloat(target);
-                float[] targetLeftFloat = ParseToFloat(targetLeft);
-                float[] targetRightFloat = ParseToFloat(targetRight);
-                Debug.WriteLine("kolejny");
+                int lengthFirst = pillowsTime.Length;
 
-                int lengthSecond = target.Length - 1;
-                int targetNumber = 0;
-                float prevTarget = targetFloat[0];
-                float timeCounter = 0;
-                float timetoStart = 0;
-                bool fakeInfo = false;
-                bool canEnter = true;
-
-                List<float> closeOneMission = new List<float>();
-                List<float> farOneMission = new List<float>();
-
-                for (int j = 1; j < lengthSecond; j++)
+                for (int i = 0; i < lengthFirst; i++)
                 {
-                    if ((playerAngleFloat[j] < 130 || playerAngleFloat[j] > 150) && j == 0)
+                    string[] pillowLeft = pillowsTime[i][0].Split(',');
+                    string[] pillowRight = pillowsTime[i][1].Split(',');
+                    string[] pillowRear = pillowsTime[i][2].Split(',');
+                    float[] pillowLeftFloat = ParseToFloat(pillowLeft);
+                    float[] pillowRightFloat = ParseToFloat(pillowRight);
+                    float[] pillowRearFloat = ParseToFloat(pillowRear);
+                    float wholeTime = Convert.ToSingle(Math.Round(double.Parse(pillowsTime[i][3].Replace('.', ',')), 1));
+                    float pillows = Convert.ToSingle(Math.Round(double.Parse(pillowsTime[i][4]), 1));
+
+                    int lengthSecond = pillowLeft.Length - 1;
+                    float[] timeLeft = new float[11];
+                    float[] timeRight = new float[11];
+                    float[] timeRear = new float[11];
+
+                    bool fakeInfo = false;
+                    float timeToStart = 0f;
+                    for (int j = 0; j < lengthSecond; j++)
                     {
-                        fakeInfo = true;
-                    }
-                    if (timetoStart > 14.7f && timetoStart < 14.9f)
-                    {
-                        timetoStart = 0;
-                        fakeInfo = false;
-                    }
-                    if (fakeInfo)
-                    {
-                        timetoStart += 0.2f;
-                        continue;
+                        if ((playerAngle[i] < 130 || playerAngle[i] > 150) && j == 0)
+                        {
+                            fakeInfo = true;
+                        }
+                        if (timeToStart > 14.7f && timeToStart < 14.9f)
+                        {
+                            timeToStart = 0f;
+                            fakeInfo = false;
+                        }
+                        if (fakeInfo)
+                        {
+                            timeToStart += 0.2f;
+                            continue;
+                        }
+
+                        if (pillowLeftFloat[j] >= 20 && pillowLeftFloat[j] < 28)
+                            timeLeft[1] += 0.2f;
+                        else if (pillowLeftFloat[j] >= 28 && pillowLeftFloat[j] < 36)
+                            timeLeft[2] += 0.2f;
+                        else if (pillowLeftFloat[j] >= 36 && pillowLeftFloat[j] < 44)
+                            timeLeft[3] += 0.2f;
+                        else if (pillowLeftFloat[j] >= 44 && pillowLeftFloat[j] < 52)
+                            timeLeft[4] += 0.2f;
+                        else if (pillowLeftFloat[j] >= 52 && pillowLeftFloat[j] < 60)
+                            timeLeft[5] += 0.2f;
+                        else if (pillowLeftFloat[j] >= 60 && pillowLeftFloat[j] < 68)
+                            timeLeft[6] += 0.2f;
+                        else if (pillowLeftFloat[j] >= 68 && pillowLeftFloat[j] < 76)
+                            timeLeft[7] += 0.2f;
+                        else if (pillowLeftFloat[j] >= 76 && pillowLeftFloat[j] < 84)
+                            timeLeft[8] += 0.2f;
+                        else if (pillowLeftFloat[j] >= 84 && pillowLeftFloat[j] < 92)
+                            timeLeft[9] += 0.2f;
+                        else if (pillowLeftFloat[j] >= 92 && pillowLeftFloat[j] <= 100)
+                            timeLeft[10] += 0.2f;
+                        else
+                            timeLeft[0] += 0.2f;
+
+                        if (pillowRightFloat[j] >= 20 && pillowRightFloat[j] < 28)
+                            timeRight[1] += 0.2f;
+                        else if (pillowRightFloat[j] >= 28 && pillowRightFloat[j] < 36)
+                            timeRight[2] += 0.2f;
+                        else if (pillowRightFloat[j] >= 36 && pillowRightFloat[j] < 44)
+                            timeRight[3] += 0.2f;
+                        else if (pillowRightFloat[j] >= 44 && pillowRightFloat[j] < 52)
+                            timeRight[4] += 0.2f;
+                        else if (pillowRightFloat[j] >= 52 && pillowRightFloat[j] < 60)
+                            timeRight[5] += 0.2f;
+                        else if (pillowRightFloat[j] >= 60 && pillowRightFloat[j] < 68)
+                            timeRight[6] += 0.2f;
+                        else if (pillowRightFloat[j] >= 68 && pillowRightFloat[j] < 76)
+                            timeRight[7] += 0.2f;
+                        else if (pillowRightFloat[j] >= 76 && pillowRightFloat[j] < 84)
+                            timeRight[8] += 0.2f;
+                        else if (pillowRightFloat[j] >= 84 && pillowRightFloat[j] < 92)
+                            timeRight[9] += 0.2f;
+                        else if (pillowRightFloat[j] >= 92 && pillowRightFloat[j] <= 100)
+                            timeRight[10] += 0.2f;
+                        else
+                            timeRight[0] += 0.2f;
+
+                        if (pillowRearFloat[j] >= 20 && pillowRearFloat[j] < 28)
+                            timeRear[1] += 0.2f;
+                        else if (pillowRearFloat[j] >= 28 && pillowRearFloat[j] < 36)
+                            timeRear[2] += 0.2f;
+                        else if (pillowRearFloat[j] >= 36 && pillowRearFloat[j] < 44)
+                            timeRear[3] += 0.2f;
+                        else if (pillowRearFloat[j] >= 44 && pillowRearFloat[j] < 52)
+                            timeRear[4] += 0.2f;
+                        else if (pillowRearFloat[j] >= 52 && pillowRearFloat[j] < 60)
+                            timeRear[5] += 0.2f;
+                        else if (pillowRearFloat[j] >= 60 && pillowRearFloat[j] < 68)
+                            timeRear[6] += 0.2f;
+                        else if (pillowRearFloat[j] >= 68 && pillowRearFloat[j] < 76)
+                            timeRear[7] += 0.2f;
+                        else if (pillowRearFloat[j] >= 76 && pillowRearFloat[j] < 84)
+                            timeRear[8] += 0.2f;
+                        else if (pillowRearFloat[j] >= 84 && pillowRearFloat[j] < 92)
+                            timeRear[9] += 0.2f;
+                        else if (pillowRearFloat[j] >= 92 && pillowRearFloat[j] <= 100)
+                            timeRear[10] += 0.2f;
+                        else
+                            timeRear[0] += 0.2f;
                     }
 
-                    if (targetFloat[j] < -5f || targetFloat[j] > 5f)
+                    for (int j = 0; j < 11; j++)
                     {
-                        if (prevTarget != targetFloat[j] || j == lengthSecond - 1)
-                        {
-                            Debug.WriteLine(timeCounter);
-                            counter++;
-                            canEnter = true;
-                            if (targetNumber < 5)
-                            {
-                                timeClose.Add(timeCounter);
-                                closeOneMission.Add(timeCounter);
-                            }
-                            else
-                            {
-                                timeFar.Add(timeCounter);
-                                farOneMission.Add(timeCounter);
-                            }
-                            targetNumber++;
-                            timeCounter = 0f;
-                        }
-                        if (targetFloat[j] > -50f && targetFloat[j] < -30f)
-                        {
-                            if (playerAngleFloat[j] > targetLeftFloat[j] && canEnter)
-                            {
-                                timeCounter += 0.2f;
-                            }
-                            else
-                                canEnter = false;
-                        }
-                        else if (targetFloat[j] < 50 && targetFloat[j] > 30)
-                        {
-                            if (playerAngleFloat[j] < targetRightFloat[j] && canEnter)
-                            {
-                                timeCounter += 0.2f;
-                            }
-                            else
-                                canEnter = false;
-                        }
-                        prevTarget = targetFloat[j];
+                        timeLeft[j] = (timeLeft[j] / wholeTime) * 100;
+                        pillowsPercentage[0][i][j] = timeLeft[j];
+
+                        timeRight[j] = (timeRight[j] / wholeTime) * 100;
+                        pillowsPercentage[1][i][j] = timeRight[j];
+
+                        timeRear[j] = (timeRear[j] / wholeTime) * 100;
+                        pillowsPercentage[2][i][j] = timeRear[j];
                     }
                 }
-                float average = 0;
-                closeOneMission.ForEach(item => average += item);
-                average /= closeOneMission.Count;
-                averageCloseOneMission.Add(average);
 
-                average = 0;
-                farOneMission.ForEach(item => average += item);
-                average /= farOneMission.Count;
-                averageFarOneMission.Add(average);
+                Form3 form3 = new Form3();
+                form3.Text = "Pillows press percentage";
+                form3.Show();
             }
-            float averageClose = 0;
-            timeClose.ForEach(item => averageClose += item);
-            averageClose /= timeClose.Count;
-
-            float averageFar = 0;
-            timeFar.ForEach(item => averageFar += item);
-            averageFar /= timeFar.Count;
-
-            string timesClose = "";
-            for (int i = 1; i <= averageCloseOneMission.Count; i++)
+            else
             {
-                timesClose += i + ". " + averageCloseOneMission[i-1] + " s     ";
+                MessageBox.Show("Nie wybrałeś misji.");
             }
+        }
 
-            string timesFar = "";
-            for (int i = 1; i <= averageFarOneMission.Count; i++)
+        private void SettingTime_Click(object sender, EventArgs e)
+        {
+            if (settingTimeBool == true)
             {
-                timesFar += i + ". " + averageFarOneMission[i - 1] + " s     ";
-            }
+                int lengthFirst = settingTime.Length;
 
-            MessageBox.Show("average close: " + averageClose + "    average far: " + averageFar + "\n" + timesClose + "\n" + timesFar);
+                List<float> averageCloseOneMission = new List<float>();
+                List<float> averageFarOneMission = new List<float>();
+
+                List<float> timeClose = new List<float>();
+                List<float> timeFar = new List<float>();
+
+                List<float> pillowsEach = new List<float>();
+
+                List<float> averageAfterCloseOneMission = new List<float>();
+                List<float> averageAfterFarOneMission = new List<float>();
+
+                List<float> afterTimeClose = new List<float>();
+                List<float> afterTimeFar = new List<float>();
+                for (int i = 0; i < lengthFirst; i++)
+                {
+                    string[] playerAngle = settingTime[i][0].Split(',');
+                    string[] target = settingTime[i][1].Split(',');
+                    string[] targetLeft = settingTime[i][2].Split(',');
+                    string[] targetRight = settingTime[i][3].Split(',');
+                    float[] playerAngleFloat = ParseToFloat(playerAngle);
+                    float[] targetFloat = ParseToFloat(target);
+                    float[] targetLeftFloat = ParseToFloat(targetLeft);
+                    float[] targetRightFloat = ParseToFloat(targetRight);
+                    float pillows = Convert.ToSingle(Math.Round(double.Parse(settingTime[i][4]), 1));
+
+                    int lengthSecond = target.Length - 1;
+                    int targetNumber = 0;
+                    float prevTarget = targetFloat[0];
+                    float timeCounter = 0;
+                    float timeAfterSetting = 0;
+                    float timetoStart = 0;
+                    bool fakeInfo = false;
+                    bool canEnter = true;
+
+                    List<float> closeOneMission = new List<float>();
+                    List<float> farOneMission = new List<float>();
+
+                    List<float> afterCloseOneMission = new List<float>();
+                    List<float> afterFarOneMission = new List<float>();
+
+                    for (int j = 1; j < lengthSecond; j++)
+                    {
+                        if ((playerAngleFloat[j] < 130 || playerAngleFloat[j] > 150) && j == 1)
+                        {
+                            fakeInfo = true;
+                        }
+                        if (timetoStart > 14.7f && timetoStart < 14.9f)
+                        {
+                            timetoStart = 0;
+                            fakeInfo = false;
+                            prevTarget = targetFloat[j + 1];
+                        }
+                        if (fakeInfo)
+                        {
+                            timetoStart += 0.2f;
+                            continue;
+                        }
+
+                        if (targetFloat[j] < -5f || targetFloat[j] > 5f)
+                        {
+                            if (prevTarget != targetFloat[j] || j == lengthSecond - 1)
+                            {
+                                canEnter = true;
+                                pillowsEach.Add(pillows);
+                                if (targetNumber < 4)
+                                {
+                                    timeClose.Add(timeCounter);
+                                    closeOneMission.Add(timeCounter);
+                                    afterTimeClose.Add(timeAfterSetting);
+                                    afterCloseOneMission.Add(timeAfterSetting);
+                                }
+                                else
+                                {
+                                    timeFar.Add(timeCounter);
+                                    farOneMission.Add(timeCounter);
+                                    afterTimeFar.Add(timeAfterSetting);
+                                    afterFarOneMission.Add(timeAfterSetting);
+                                }
+                                targetNumber++;
+                                timeCounter = 0f;
+                                timeAfterSetting = 0f;
+                            }
+                            if (targetFloat[j] > -50f && targetFloat[j] < -30f)
+                            {
+                                if (playerAngleFloat[j] > targetLeftFloat[j] && canEnter)
+                                {
+                                    timeCounter += 0.2f;
+                                }
+                                else
+                                {
+                                    canEnter = false;
+                                    if (playerAngleFloat[j] > targetLeftFloat[j] || playerAngleFloat[j] < targetRightFloat[j])
+                                    {
+                                        timeAfterSetting += 0.2f;
+                                    }
+                                }
+                            }
+                            else if (targetFloat[j] < 50 && targetFloat[j] > 30)
+                            {
+                                if (playerAngleFloat[j] < targetRightFloat[j] && canEnter)
+                                {
+                                    timeCounter += 0.2f;
+                                }
+                                else
+                                {
+                                    canEnter = false;
+                                    if (playerAngleFloat[j] > targetLeftFloat[j] || playerAngleFloat[j] < targetRightFloat[j])
+                                    {
+                                        timeAfterSetting += 0.2f;
+                                    }
+                                }
+                            }
+                            prevTarget = targetFloat[j];
+                        }
+                    }
+                    float average = 0;
+                    closeOneMission.ForEach(item => average += item);
+                    average /= closeOneMission.Count;
+                    averageCloseOneMission.Add(average);
+
+                    average = 0;
+                    afterCloseOneMission.ForEach(item => average += item);
+                    average /= afterCloseOneMission.Count;
+                    averageAfterCloseOneMission.Add(average);
+
+                    average = 0;
+                    farOneMission.ForEach(item => average += item);
+                    average /= farOneMission.Count;
+                    averageFarOneMission.Add(average);
+
+                    average = 0;
+                    afterFarOneMission.ForEach(item => average += item);
+                    average /= afterFarOneMission.Count;
+                    averageAfterFarOneMission.Add(average);
+                }
+                float averageClose = 0;
+                timeClose.ForEach(item => averageClose += item);
+                averageClose /= timeClose.Count;
+
+                float averageFar = 0;
+                timeFar.ForEach(item => averageFar += item);
+                averageFar /= timeFar.Count;
+
+                float afterAverageClose = 0;
+                afterTimeClose.ForEach(item => afterAverageClose += item);
+                afterAverageClose /= afterTimeClose.Count;
+
+                float afterAverageFar = 0;
+                afterTimeFar.ForEach(item => afterAverageFar += item);
+                afterAverageFar /= afterTimeFar.Count;
+
+                string timesClose = "";
+                for (int i = 1; i <= averageCloseOneMission.Count; i++)
+                {
+                    timesClose += i + ". " + "p: " + pillowsEach[i - 1] + " ; " + averageCloseOneMission[i - 1] + " s     ";
+                }
+
+                string timesFar = "";
+                for (int i = 1; i <= averageFarOneMission.Count; i++)
+                {
+                    timesFar += i + ". " + "p: " + pillowsEach[i - 1] + " ; " + averageFarOneMission[i - 1] + " s     ";
+                }
+
+                string afterTimesClose = "";
+                for (int i = 1; i <= averageAfterCloseOneMission.Count; i++)
+                {
+                    afterTimesClose += i + ". " + "p: " + pillowsEach[i - 1] + " ; " + averageAfterCloseOneMission[i - 1] + " s     ";
+                }
+
+                string afterTimesFar = "";
+                for (int i = 1; i <= averageAfterFarOneMission.Count; i++)
+                {
+                    afterTimesFar += i + ". " + "p: " + pillowsEach[i - 1] + " ; " + averageAfterFarOneMission[i - 1] + " s     ";
+                }
+
+                MessageBox.Show("average close: " + averageClose + "    average far: " + averageFar + "\n" + timesClose + "\n" + timesFar + "\n\n"
+                    + "average after close: " + afterAverageClose + "    average after far: " + afterAverageFar + "\n" + afterTimesClose + "\n"
+                    + afterTimesFar);
+            }
+            else
+            {
+                MessageBox.Show("Nie wybrałeś misji.");
+            }
         }
 
         float[] ParseToFloat(string[] data)

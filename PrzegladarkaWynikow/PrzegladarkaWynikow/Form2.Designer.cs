@@ -50,6 +50,7 @@
             this.Mission4 = new System.Windows.Forms.Button();
             this.bigDataGraph = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.SettingTime = new System.Windows.Forms.Button();
+            this.PillowsTimePercent = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bigDataGraph)).BeginInit();
             this.SuspendLayout();
@@ -191,11 +192,22 @@
             this.SettingTime.UseVisualStyleBackColor = true;
             this.SettingTime.Click += new System.EventHandler(this.SettingTime_Click);
             // 
+            // PillowsTimePercent
+            // 
+            this.PillowsTimePercent.Location = new System.Drawing.Point(588, 13);
+            this.PillowsTimePercent.Name = "PillowsTimePercent";
+            this.PillowsTimePercent.Size = new System.Drawing.Size(75, 23);
+            this.PillowsTimePercent.TabIndex = 8;
+            this.PillowsTimePercent.Text = "Czas pod.";
+            this.PillowsTimePercent.UseVisualStyleBackColor = true;
+            this.PillowsTimePercent.Click += new System.EventHandler(this.PillowsTimePercent_Click);
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(883, 677);
+            this.Controls.Add(this.PillowsTimePercent);
             this.Controls.Add(this.SettingTime);
             this.Controls.Add(this.bigDataGraph);
             this.Controls.Add(this.Mission4);
@@ -222,5 +234,6 @@
         private System.Windows.Forms.Button Mission4;
         private System.Windows.Forms.DataVisualization.Charting.Chart bigDataGraph;
         private System.Windows.Forms.Button SettingTime;
+        private System.Windows.Forms.Button PillowsTimePercent;
     }
 }
