@@ -9,13 +9,18 @@ namespace PrzegladarkaWynikow
     public partial class Form2 : Form
     {
         public static int whichMission;
-        Button[] buttons = new Button[10];
+        Button[] buttons = new Button[14];
         public static string[][] settingTime;
         public static string[][] pillowsTime;
         public static float[][][] pillowsPercentage;
         public static float[] playerAngle;
         public static bool settingTimeBool = false;
         public static bool pillowsTimeBool = false;
+
+        public static string[][] integralCriterion;
+        public static bool integralCriterionBool = false;
+
+        public static bool countFifteen = false;
 
         public Form2()
         {
@@ -27,7 +32,7 @@ namespace PrzegladarkaWynikow
         private void Check(string[][][] data)
         {
             int length = 0;
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 14; i++)
                 if (data[whichMission][i][0].Length > 0)
                     length++;
 
@@ -37,7 +42,7 @@ namespace PrzegladarkaWynikow
             }
             else
             {
-                for (int i = 9; i > 0; i--)
+                for (int i = 13; i > 0; i--)
                 {
                     if (buttons[i] != null)
                     {
@@ -57,6 +62,7 @@ namespace PrzegladarkaWynikow
 
                 SettingTimeData(whichMission, length, data);
                 PillowsTimeData(whichMission, length, data);
+                IntegralCriterionData(whichMission, length, data);
 
                 DrawGraph(whichMission, 0, data);
             }
@@ -142,6 +148,24 @@ namespace PrzegladarkaWynikow
             }
 
             pillowsTimeBool = true;
+        }
+
+        void IntegralCriterionData(int whichMission, int length, string[][][] data)
+        {
+            integralCriterion = new string[length][];
+            for (int i = 0; i < length; i++)
+            {
+                integralCriterion[i] = new string[3];
+            }
+
+            for (int i = 0; i < length; i++)
+            {
+                integralCriterion[i][0] = data[whichMission][i][3];
+                integralCriterion[i][1] = data[whichMission][i][4];
+                integralCriterion[i][2] = data[whichMission][i][14];
+            }
+
+            integralCriterionBool = true;
         }
 
         void DrawGraph(int whichMission, int whichSession, string[][][] data)
@@ -360,19 +384,22 @@ namespace PrzegladarkaWynikow
                     float timeToStart = 0f;
                     for (int j = 0; j < lengthSecond; j++)
                     {
-                        if ((playerAngle[i] < 130 || playerAngle[i] > 150) && j == 0)
+                        if (countFifteen)
                         {
-                            fakeInfo = true;
-                        }
-                        if (timeToStart > 14.7f && timeToStart < 14.9f)
-                        {
-                            timeToStart = 0f;
-                            fakeInfo = false;
-                        }
-                        if (fakeInfo)
-                        {
-                            timeToStart += 0.2f;
-                            continue;
+                            if ((playerAngle[i] < 130 || playerAngle[i] > 150) && j == 0)
+                            {
+                                fakeInfo = true;
+                            }
+                            if (timeToStart > 14.9f && timeToStart < 15.1f)
+                            {
+                                timeToStart = 0f;
+                                fakeInfo = false;
+                            }
+                            if (fakeInfo)
+                            {
+                                timeToStart += 0.2f;
+                                continue;
+                            }
                         }
 
                         if (pillowLeftFloat[j] >= 20 && pillowLeftFloat[j] < 28)
@@ -468,6 +495,127 @@ namespace PrzegladarkaWynikow
             }
         }
 
+        private void IntegralCritButton_Click(object sender, EventArgs e)
+        {
+            if (integralCriterionBool == true)
+            {
+                int lengthFirst = integralCriterion.Length;
+
+                List<float> sumClose = new List<float>();
+                List<float> sumFar = new List<float>();
+
+                List<float> averageSumCloseOneMission = new List<float>();
+                List<float> averageSumFarOneMission = new List<float>();
+
+                List<float> pillowsEach = new List<float>();
+
+                for (int i = 0; i < lengthFirst; i++)
+                {
+                    string[] playerAngle = integralCriterion[i][0].Split(',');
+                    string[] target = integralCriterion[i][1].Split(',');
+                    float[] playerAngleFloat = ParseToFloat(playerAngle);
+                    float[] targetFloat = ParseToFloat(target);
+                    float pillows = Convert.ToSingle(Math.Round(double.Parse(integralCriterion[i][2]), 1));
+
+                    int lengthSecond = target.Length - 1;
+                    int targetNumber = 0;
+                    float prevTarget = targetFloat[0];
+                    float timeToStart = 0;
+                    bool fakeInfo = false;
+
+                    float sum = 0f;
+
+                    List<float> sumCloseOneMission = new List<float>();
+                    List<float> sumFarOneMission = new List<float>();
+
+                    for (int j = 0; j < lengthSecond - 1; j++)
+                    {
+                        if (countFifteen)
+                        {
+                            if ((playerAngleFloat[j] < 130 || playerAngleFloat[j] > 150) && j == 0)
+                            {
+                                fakeInfo = true;
+                            }
+                            if (timeToStart > 14.9f && timeToStart < 15.1f)
+                            {
+                                timeToStart = 0;
+                                fakeInfo = false;
+                                prevTarget = targetFloat[j + 1];
+                            }
+                            if (fakeInfo)
+                            {
+                                timeToStart += 0.2f;
+                                continue;
+                            }
+                        }
+
+                        if (targetFloat[j] < -5f || targetFloat[j] > 5f)
+                        {
+                            if (prevTarget != targetFloat[j] || j == lengthSecond - 2)
+                            {
+                                pillowsEach.Add(pillows);
+                                if (targetNumber < 4)
+                                {
+                                    if (j != lengthSecond - 2)
+                                    {
+                                        sumClose.Add(sum);
+                                        sumCloseOneMission.Add(sum);
+                                    }
+                                }
+                                else
+                                {
+                                    if (j != lengthSecond - 2)
+                                    {
+                                        sumFar.Add(sum);
+                                        sumFarOneMission.Add(sum);
+                                    }
+                                }
+                                targetNumber++;
+                                sum = 0f;
+                            }
+                            sum += (Math.Abs(playerAngleFloat[j] - targetFloat[j]) + Math.Abs(playerAngleFloat[j+1] - targetFloat[j+1])) * 0.2f / 2f;
+
+                            prevTarget = targetFloat[j];
+                        }
+                    }
+                    float average = 0;
+                    sumCloseOneMission.ForEach(item => average += item);
+                    average /= sumCloseOneMission.Count;
+                    averageSumCloseOneMission.Add(average);
+
+                    average = 0;
+                    sumFarOneMission.ForEach(item => average += item);
+                    average /= sumFarOneMission.Count;
+                    averageSumFarOneMission.Add(average);
+                }
+                float averageClose = 0;
+                sumClose.ForEach(item => averageClose += item);
+                averageClose /= sumClose.Count;
+
+                float averageFar = 0;
+                sumFar.ForEach(item => averageFar += item);
+                averageFar /= sumFar.Count;
+
+                string sumsClose = "";
+                for (int i = 1; i <= averageSumCloseOneMission.Count; i++)
+                {
+                    sumsClose += i + ". " + "p: " + pillowsEach[i - 1] + " ; " + averageSumCloseOneMission[i - 1] + "     ";
+                }
+
+                string sumsFar = "";
+                for (int i = 1; i <= averageSumFarOneMission.Count; i++)
+                {
+                    sumsFar += i + ". " + "p: " + pillowsEach[i - 1] + " ; " + averageSumFarOneMission[i - 1] + "     ";
+                }
+
+                MessageBox.Show("average sum close: " + averageClose + "    average sum far: " + averageFar + "\n" + sumsClose + "\n" + sumsFar);
+            }
+            else
+            {
+                MessageBox.Show("Nie wybrałeś misji.");
+            }
+        }
+
         private void SettingTime_Click(object sender, EventArgs e)
         {
             if (settingTimeBool == true)
@@ -514,44 +662,81 @@ namespace PrzegladarkaWynikow
                     List<float> afterCloseOneMission = new List<float>();
                     List<float> afterFarOneMission = new List<float>();
 
-                    for (int j = 1; j < lengthSecond; j++)
+                    for (int j = 0; j < lengthSecond; j++)
                     {
-                        if ((playerAngleFloat[j] < 130 || playerAngleFloat[j] > 150) && j == 1)
+                        if (countFifteen)
                         {
-                            fakeInfo = true;
-                        }
-                        if (timetoStart > 14.7f && timetoStart < 14.9f)
-                        {
-                            timetoStart = 0;
-                            fakeInfo = false;
-                            prevTarget = targetFloat[j + 1];
-                        }
-                        if (fakeInfo)
-                        {
-                            timetoStart += 0.2f;
-                            continue;
+                            if ((playerAngleFloat[j] < 130 || playerAngleFloat[j] > 150) && j == 0)
+                            {
+                                fakeInfo = true;
+                            }
+                            if (timetoStart > 14.9f && timetoStart < 15.1f)
+                            {
+                                timetoStart = 0;
+                                fakeInfo = false;
+                                prevTarget = targetFloat[j + 1];
+                            }
+                            if (fakeInfo)
+                            {
+                                timetoStart += 0.2f;
+                                continue;
+                            }
                         }
 
                         if (targetFloat[j] < -5f || targetFloat[j] > 5f)
                         {
                             if (prevTarget != targetFloat[j] || j == lengthSecond - 1)
                             {
-                                canEnter = true;
                                 pillowsEach.Add(pillows);
                                 if (targetNumber < 4)
                                 {
-                                    timeClose.Add(timeCounter);
-                                    closeOneMission.Add(timeCounter);
-                                    afterTimeClose.Add(timeAfterSetting);
-                                    afterCloseOneMission.Add(timeAfterSetting);
+                                    if (j != lengthSecond - 1)
+                                    {
+                                        timeClose.Add(timeCounter);
+                                        closeOneMission.Add(timeCounter);
+                                    }
+                                    else if (j == lengthSecond - 1 && canEnter == false)
+                                    {
+                                        timeClose.Add(timeCounter);
+                                        closeOneMission.Add(timeCounter);
+                                    }
+
+                                    if (j != lengthSecond - 1)
+                                    {
+                                        afterTimeClose.Add(timeAfterSetting);
+                                        afterCloseOneMission.Add(timeAfterSetting);
+                                    }
+                                    else if (j == lengthSecond - 1 && timeAfterSetting != 0)
+                                    {
+                                        afterTimeClose.Add(timeAfterSetting);
+                                        afterCloseOneMission.Add(timeAfterSetting);
+                                    }
                                 }
                                 else
                                 {
-                                    timeFar.Add(timeCounter);
-                                    farOneMission.Add(timeCounter);
-                                    afterTimeFar.Add(timeAfterSetting);
-                                    afterFarOneMission.Add(timeAfterSetting);
+                                    if (j != lengthSecond - 1)
+                                    {
+                                        timeFar.Add(timeCounter);
+                                        farOneMission.Add(timeCounter);
+                                    }
+                                    else if (j == lengthSecond - 1 && canEnter == false)
+                                    {
+                                        timeFar.Add(timeCounter);
+                                        farOneMission.Add(timeCounter);
+                                    }
+
+                                    if (j != lengthSecond - 1)
+                                    {
+                                        afterTimeFar.Add(timeAfterSetting);
+                                        afterFarOneMission.Add(timeAfterSetting);
+                                    }
+                                    else if (j == lengthSecond - 1 && timeAfterSetting != 0)
+                                    {
+                                        afterTimeFar.Add(timeAfterSetting);
+                                        afterFarOneMission.Add(timeAfterSetting);
+                                    }
                                 }
+                                canEnter = true;
                                 targetNumber++;
                                 timeCounter = 0f;
                                 timeAfterSetting = 0f;
@@ -717,6 +902,14 @@ namespace PrzegladarkaWynikow
             {
                 ax1.ScaleView.Position = ax2.ScaleView.Position;
             }
+        }
+
+        private void CountFifteen_CheckedChanged(object sender, EventArgs e)
+        {
+            if (CountFifteen.Checked)
+                countFifteen = true;
+            else
+                countFifteen = false;
         }
     }
 }

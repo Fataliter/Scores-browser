@@ -30,8 +30,8 @@ namespace PrzegladarkaWynikow
             string[][][] results = new string[5][][];
             for (int i = 0; i < 5; i++)
             {
-                results[i] = new string[12][];
-                for (int j = 0; j < 12; j++)
+                results[i] = new string[14][];
+                for (int j = 0; j < 14; j++)
                 {
                     results[i][j] = new string[15];
                     for (int k = 0; k < 15; k++)

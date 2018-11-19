@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
@@ -44,6 +37,7 @@ namespace PrzegladarkaWynikow
             this.Controls.Add(chartOne);
             ChartArea areaOne = new ChartArea();
             chartOne.ChartAreas.Add(areaOne);
+            areaOne.Name = "areaOne";
             Title titleOne = new Title();
             titleOne.Name = "Title";
             chartOne.Titles.Add(titleOne);
@@ -54,6 +48,7 @@ namespace PrzegladarkaWynikow
             this.Controls.Add(chartTwo);
             ChartArea areaTwo = new ChartArea();
             chartTwo.ChartAreas.Add(areaTwo);
+            areaTwo.Name = "areaTwo";
             Title titleTwo = new Title();
             titleTwo.Name = "Title";
             chartTwo.Titles.Add(titleTwo);
@@ -64,6 +59,7 @@ namespace PrzegladarkaWynikow
             this.Controls.Add(chartThree);
             ChartArea areaThree = new ChartArea();
             chartThree.ChartAreas.Add(areaThree);
+            areaThree.Name = "areaThree";
             Title titleThree = new Title();
             titleThree.Name = "Title";
             chartThree.Titles.Add(titleThree);
@@ -86,18 +82,27 @@ namespace PrzegladarkaWynikow
             chartOne.Series["Left"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
             chartOne.Series["Left"].IsValueShownAsLabel = true;
             chartOne.Series["Left"].Name = "Lewa";
+            var areaOne = chartOne.ChartAreas["areaOne"];
+            areaOne.AxisX.Title = "przedziały nacisku na poduszki";
+            areaOne.AxisY.Title = "czas nacisku [%]";
 
             chartTwo.Series.Add("Right");
             chartTwo.Series["Right"].BorderWidth = 2;
             chartTwo.Series["Right"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
             chartTwo.Series["Right"].IsValueShownAsLabel = true;
             chartTwo.Series["Right"].Name = "Prawa";
+            var areaTwo = chartTwo.ChartAreas["areaTwo"];
+            areaTwo.AxisX.Title = "przedziały nacisku na poduszki";
+            areaTwo.AxisY.Title = "czas nacisku [%]";
 
             chartThree.Series.Add("Rear");
             chartThree.Series["Rear"].BorderWidth = 2;
             chartThree.Series["Rear"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
             chartThree.Series["Rear"].IsValueShownAsLabel = true;
             chartThree.Series["Rear"].Name = "Tylna";
+            var areaThree = chartThree.ChartAreas["areaThree"];
+            areaThree.AxisX.Title = "przedziały nacisku na poduszki";
+            areaThree.AxisY.Title = "czas nacisku [%]";
 
             if (whichSession == Form2.pillowsPercentage[0].Length)
             {

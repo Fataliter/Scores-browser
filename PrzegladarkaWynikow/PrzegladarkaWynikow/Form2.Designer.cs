@@ -28,20 +28,20 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series10 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series11 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series12 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series13 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title2 = new System.Windows.Forms.DataVisualization.Charting.Title();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series14 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series15 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series16 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series17 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series18 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series9 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.dataGraph = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.Training = new System.Windows.Forms.Button();
             this.Mission1 = new System.Windows.Forms.Button();
@@ -51,47 +51,49 @@
             this.bigDataGraph = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.SettingTime = new System.Windows.Forms.Button();
             this.PillowsTimePercent = new System.Windows.Forms.Button();
+            this.IntegralCritButton = new System.Windows.Forms.Button();
+            this.CountFifteen = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bigDataGraph)).BeginInit();
             this.SuspendLayout();
             // 
             // dataGraph
             // 
-            chartArea3.AxisX.ScaleBreakStyle.StartFromZero = System.Windows.Forms.DataVisualization.Charting.StartFromZero.Yes;
-            chartArea3.Name = "ChartArea1";
-            this.dataGraph.ChartAreas.Add(chartArea3);
-            legend3.Name = "Legend1";
-            this.dataGraph.Legends.Add(legend3);
+            chartArea1.AxisX.ScaleBreakStyle.StartFromZero = System.Windows.Forms.DataVisualization.Charting.StartFromZero.Yes;
+            chartArea1.Name = "ChartArea1";
+            this.dataGraph.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.dataGraph.Legends.Add(legend1);
             this.dataGraph.Location = new System.Drawing.Point(6, 70);
             this.dataGraph.Name = "dataGraph";
-            series10.ChartArea = "ChartArea1";
-            series10.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series10.Color = System.Drawing.Color.Blue;
-            series10.Legend = "Legend1";
-            series10.Name = "timeToHit";
-            series10.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Double;
-            series11.ChartArea = "ChartArea1";
-            series11.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series11.Legend = "Legend1";
-            series11.Name = "angle";
-            series12.ChartArea = "ChartArea1";
-            series12.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series12.Legend = "Legend1";
-            series12.Name = "targetLocation";
-            series13.ChartArea = "ChartArea1";
-            series13.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series13.Legend = "Legend1";
-            series13.Name = "hitAngle";
-            this.dataGraph.Series.Add(series10);
-            this.dataGraph.Series.Add(series11);
-            this.dataGraph.Series.Add(series12);
-            this.dataGraph.Series.Add(series13);
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series1.Color = System.Drawing.Color.Blue;
+            series1.Legend = "Legend1";
+            series1.Name = "timeToHit";
+            series1.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Double;
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series2.Legend = "Legend1";
+            series2.Name = "angle";
+            series3.ChartArea = "ChartArea1";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series3.Legend = "Legend1";
+            series3.Name = "targetLocation";
+            series4.ChartArea = "ChartArea1";
+            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series4.Legend = "Legend1";
+            series4.Name = "hitAngle";
+            this.dataGraph.Series.Add(series1);
+            this.dataGraph.Series.Add(series2);
+            this.dataGraph.Series.Add(series3);
+            this.dataGraph.Series.Add(series4);
             this.dataGraph.Size = new System.Drawing.Size(865, 321);
             this.dataGraph.TabIndex = 0;
             this.dataGraph.Text = "dataGraph";
-            title2.Name = "Title";
-            title2.Text = "Data";
-            this.dataGraph.Titles.Add(title2);
+            title1.Name = "Title";
+            title1.Text = "Data";
+            this.dataGraph.Titles.Add(title1);
             this.dataGraph.AxisViewChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(this.dataGraph_AxisViewChanged);
             // 
             // Training
@@ -146,37 +148,37 @@
             // 
             // bigDataGraph
             // 
-            chartArea4.Name = "ChartArea1";
-            this.bigDataGraph.ChartAreas.Add(chartArea4);
-            legend4.Name = "Legend1";
-            this.bigDataGraph.Legends.Add(legend4);
+            chartArea2.Name = "ChartArea1";
+            this.bigDataGraph.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            this.bigDataGraph.Legends.Add(legend2);
             this.bigDataGraph.Location = new System.Drawing.Point(6, 397);
             this.bigDataGraph.Name = "bigDataGraph";
-            series14.ChartArea = "ChartArea1";
-            series14.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series14.Legend = "Legend1";
-            series14.Name = "pressOnLeftLeg";
-            series15.ChartArea = "ChartArea1";
-            series15.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series15.Legend = "Legend1";
-            series15.Name = "pressOnRightLeg";
-            series16.ChartArea = "ChartArea1";
-            series16.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series16.Legend = "Legend1";
-            series16.Name = "pressOnLeftPillow";
-            series17.ChartArea = "ChartArea1";
-            series17.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series17.Legend = "Legend1";
-            series17.Name = "pressOnRightPillow";
-            series18.ChartArea = "ChartArea1";
-            series18.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series18.Legend = "Legend1";
-            series18.Name = "pressOnRearPillow";
-            this.bigDataGraph.Series.Add(series14);
-            this.bigDataGraph.Series.Add(series15);
-            this.bigDataGraph.Series.Add(series16);
-            this.bigDataGraph.Series.Add(series17);
-            this.bigDataGraph.Series.Add(series18);
+            series5.ChartArea = "ChartArea1";
+            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series5.Legend = "Legend1";
+            series5.Name = "pressOnLeftLeg";
+            series6.ChartArea = "ChartArea1";
+            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series6.Legend = "Legend1";
+            series6.Name = "pressOnRightLeg";
+            series7.ChartArea = "ChartArea1";
+            series7.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series7.Legend = "Legend1";
+            series7.Name = "pressOnLeftPillow";
+            series8.ChartArea = "ChartArea1";
+            series8.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series8.Legend = "Legend1";
+            series8.Name = "pressOnRightPillow";
+            series9.ChartArea = "ChartArea1";
+            series9.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series9.Legend = "Legend1";
+            series9.Name = "pressOnRearPillow";
+            this.bigDataGraph.Series.Add(series5);
+            this.bigDataGraph.Series.Add(series6);
+            this.bigDataGraph.Series.Add(series7);
+            this.bigDataGraph.Series.Add(series8);
+            this.bigDataGraph.Series.Add(series9);
             this.bigDataGraph.Size = new System.Drawing.Size(865, 279);
             this.bigDataGraph.TabIndex = 6;
             this.bigDataGraph.Text = "bigDataGraph";
@@ -202,11 +204,34 @@
             this.PillowsTimePercent.UseVisualStyleBackColor = true;
             this.PillowsTimePercent.Click += new System.EventHandler(this.PillowsTimePercent_Click);
             // 
+            // IntegralCritButton
+            // 
+            this.IntegralCritButton.Location = new System.Drawing.Point(682, 13);
+            this.IntegralCritButton.Name = "IntegralCritButton";
+            this.IntegralCritButton.Size = new System.Drawing.Size(75, 23);
+            this.IntegralCritButton.TabIndex = 9;
+            this.IntegralCritButton.Text = "Kryt. całk.";
+            this.IntegralCritButton.UseVisualStyleBackColor = true;
+            this.IntegralCritButton.Click += new System.EventHandler(this.IntegralCritButton_Click);
+            // 
+            // CountFifteen
+            // 
+            this.CountFifteen.AutoSize = true;
+            this.CountFifteen.Location = new System.Drawing.Point(790, 18);
+            this.CountFifteen.Name = "CountFifteen";
+            this.CountFifteen.Size = new System.Drawing.Size(65, 17);
+            this.CountFifteen.TabIndex = 10;
+            this.CountFifteen.Text = "Licz 15s";
+            this.CountFifteen.UseVisualStyleBackColor = true;
+            this.CountFifteen.CheckedChanged += new System.EventHandler(this.CountFifteen_CheckedChanged);
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(883, 677);
+            this.Controls.Add(this.CountFifteen);
+            this.Controls.Add(this.IntegralCritButton);
             this.Controls.Add(this.PillowsTimePercent);
             this.Controls.Add(this.SettingTime);
             this.Controls.Add(this.bigDataGraph);
@@ -222,6 +247,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGraph)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.bigDataGraph)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -235,5 +261,7 @@
         private System.Windows.Forms.DataVisualization.Charting.Chart bigDataGraph;
         private System.Windows.Forms.Button SettingTime;
         private System.Windows.Forms.Button PillowsTimePercent;
+        private System.Windows.Forms.Button IntegralCritButton;
+        private System.Windows.Forms.CheckBox CountFifteen;
     }
 }
