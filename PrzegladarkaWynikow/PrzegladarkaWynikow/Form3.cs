@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
+using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using CsvHelper;
 
 namespace PrzegladarkaWynikow
 {
     public partial class Form3 : Form
     {
-        Button[] buttons = new Button[12];
+        Button[] buttons = new Button[35];
         Chart chartOne = new Chart();
         Chart chartTwo = new Chart();
         Chart chartThree = new Chart();
@@ -22,8 +25,8 @@ namespace PrzegladarkaWynikow
             for (int i = 0; i < length + 1; i++)
             {
                 Button newButton = new Button();
-                newButton.Location = new Point(10 + i * 60, 15);
-                newButton.Size = new Size(40, 23);
+                newButton.Location = new Point(10 + i * 35, 15);
+                newButton.Size = new Size(30, 23);
                 newButton.Text = (i + 1).ToString();
                 buttons[i] = newButton;
                 buttons[i].Click += new EventHandler(Draw_Click);
@@ -110,6 +113,15 @@ namespace PrzegladarkaWynikow
                 float[] pillowsPercentageLeft = new float[11];
                 float[] pillowsPercentageRight = new float[11];
                 float[] pillowsPercentageRear = new float[11];
+
+                var csv = new StringBuilder();
+                csv.AppendLine(this.Text);
+                //csv.AppendLine("pLeft;pRight;pRear");
+
+                string pLeft = "";
+                string pRight = "";
+                string pRear = "";
+
                 for (int i = 0; i < 11; i++)
                 {
                     float averageLeft = 0;
@@ -124,7 +136,23 @@ namespace PrzegladarkaWynikow
                     pillowsPercentageLeft[i] = averageLeft / lengthPercentage;
                     pillowsPercentageRight[i] = averageRight / lengthPercentage;
                     pillowsPercentageRear[i] = averageRear / lengthPercentage;
+
+                    if (i < 10)
+                    {
+                        pLeft += pillowsPercentageLeft[i] + ";";
+                        pRight += pillowsPercentageRight[i] + ";";
+                        pRear += pillowsPercentageRear[i] + ";";
+                    }
+                    else
+                    {
+                        pLeft += pillowsPercentageLeft[i];
+                        pRight += pillowsPercentageRight[i];
+                        pRear += pillowsPercentageRear[i];
+                    }
                 }
+                csv.AppendLine(pLeft+";"+pRight+";"+pRear);
+
+                File.AppendAllText(@"D:\Studia\csvki\procent_poduszek.csv", csv.ToString());
 
                 chartOne.Titles["Title"].Text = "Lewa Poduszka";
                 chartTwo.Titles["Title"].Text = "Prawa Poduszka";

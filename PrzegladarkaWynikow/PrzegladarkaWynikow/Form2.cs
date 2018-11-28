@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
+using System.Text;
 using System.Windows.Forms;
+using CsvHelper;
 
 namespace PrzegladarkaWynikow
 {
     public partial class Form2 : Form
     {
         public static int whichMission;
-        Button[] buttons = new Button[14];
+        Button[] buttons = new Button[35];
         public static string[][] settingTime;
         public static string[][] pillowsTime;
         public static float[][][] pillowsPercentage;
@@ -32,7 +35,7 @@ namespace PrzegladarkaWynikow
         private void Check(string[][][] data)
         {
             int length = 0;
-            for (int i = 0; i < 14; i++)
+            for (int i = 0; i < 35; i++)
                 if (data[whichMission][i][0].Length > 0)
                     length++;
 
@@ -42,7 +45,7 @@ namespace PrzegladarkaWynikow
             }
             else
             {
-                for (int i = 13; i > 0; i--)
+                for (int i = 34; i > 0; i--)
                 {
                     if (buttons[i] != null)
                     {
@@ -52,8 +55,8 @@ namespace PrzegladarkaWynikow
                 for (int i = 0; i < length; i++)
                 {
                     Button newButton = new Button();
-                    newButton.Location = new Point(10 + i * 60, 45);
-                    newButton.Size = new Size(40, 23);
+                    newButton.Location = new Point(10 + i * 35, 45);
+                    newButton.Size = new Size(30, 23);
                     newButton.Text = (i + 1).ToString();
                     buttons[i] = newButton;
                     buttons[i].Click += new EventHandler(Draw_Click);
@@ -217,7 +220,7 @@ namespace PrzegladarkaWynikow
                         dataGraph.Series["targetLocation"].Name = "Położenie celu";
                         break;
                     case 5:
-                        dataGraph.Series.Add("hitAngle");
+                        /*dataGraph.Series.Add("hitAngle");
                         dataGraph.Series["hitAngle"].BorderWidth = 2;
                         dataGraph.Series["hitAngle"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
                         for (int j = 0; j < dataLineSplitted.Length - 1; j++)
@@ -225,7 +228,7 @@ namespace PrzegladarkaWynikow
                             float dataToDrawFloat = float.Parse(dataLineSplitted[j].Replace(".", ","));
                             dataGraph.Series["hitAngle"].Points.AddXY(timeToHitFloat[j], dataToDrawFloat);
                         }
-                        dataGraph.Series["hitAngle"].Name = "Trafienie";
+                        dataGraph.Series["hitAngle"].Name = "Trafienie";*/
                         break;
                     case 6:
                         /*Draw("points", dataLineSplitted);
@@ -277,7 +280,7 @@ namespace PrzegladarkaWynikow
                             float dataToDrawFloat = float.Parse(dataLineSplitted[j].Replace(".", ","));
                             dataGraph.Series["targetAngleLeft"].Points.AddXY(j * 0.2f, dataToDrawFloat);
                         }
-                        dataGraph.Series["targetAngleLeft"].Name = "Lewa strona";
+                        dataGraph.Series["targetAngleLeft"].Name = "Lewa strona celu";
                         break;
                     case 13:
                         dataGraph.Series.Add("targetAngleRight");
@@ -289,7 +292,7 @@ namespace PrzegladarkaWynikow
                             float dataToDrawFloat = float.Parse(dataLineSplitted[j].Replace(".", ","));
                             dataGraph.Series["targetAngleRight"].Points.AddXY(j * 0.2f, dataToDrawFloat);
                         }
-                        dataGraph.Series["targetAngleRight"].Name = "Prawa strona";
+                        dataGraph.Series["targetAngleRight"].Name = "Prawa strona celu";
                         break;
                 }
             }
@@ -363,6 +366,7 @@ namespace PrzegladarkaWynikow
             if (pillowsTimeBool == true)
             {
                 int lengthFirst = pillowsTime.Length;
+                string dateToExcel = "";
 
                 for (int i = 0; i < lengthFirst; i++)
                 {
@@ -472,6 +476,31 @@ namespace PrzegladarkaWynikow
                             timeRear[0] += 0.2f;
                     }
 
+                    var csv = new StringBuilder();
+
+                    if (i == 0)
+                    {
+                        dateToExcel = this.Text.Replace('_', '-');
+                        dateToExcel = dateToExcel.Remove(dateToExcel.Length - 7);
+                        dateToExcel = dateToExcel.Remove(13, 1);
+                        dateToExcel = dateToExcel.Insert(13, ":");
+                        dateToExcel = dateToExcel.Remove(6, 2);
+
+                        csv.AppendLine(dateToExcel);
+                    }
+
+                    string pillowsOn = "";
+
+                    //pillows: 0 - without, 1 - with
+                    if (pillows > 100)
+                        pillowsOn = "0";
+                    else
+                        pillowsOn = "1";
+
+                    string writeLeft = pillowsOn + ";";
+                    string writeRight = pillowsOn + ";";
+                    string writeRear = pillowsOn + ";";
+
                     for (int j = 0; j < 11; j++)
                     {
                         timeLeft[j] = (timeLeft[j] / wholeTime) * 100;
@@ -482,11 +511,27 @@ namespace PrzegladarkaWynikow
 
                         timeRear[j] = (timeRear[j] / wholeTime) * 100;
                         pillowsPercentage[2][i][j] = timeRear[j];
+
+                        if (j < 10)
+                        {
+                            writeLeft += timeLeft[j] + ";";
+                            writeRight += timeRight[j] + ";";
+                            writeRear += timeRear[j] + ";";
+                        }
+                        else
+                        {
+                            writeLeft += timeLeft[j];
+                            writeRight += timeRight[j];
+                            writeRear += timeRear[j];
+                        }
                     }
+                    csv.AppendLine(writeLeft + ";" + writeRight + ";" + writeRear);
+
+                    File.AppendAllText(@"D:\Studia\csvki\procent_poduszek_pillows.csv", csv.ToString());
                 }
 
                 Form3 form3 = new Form3();
-                form3.Text = "Pillows press percentage";
+                form3.Text = dateToExcel;
                 form3.Show();
             }
             else
@@ -564,7 +609,7 @@ namespace PrzegladarkaWynikow
                                 }
                                 else
                                 {
-                                    if (j != lengthSecond - 2)
+                                    if (j != lengthSecond - 2 && targetNumber != 4)
                                     {
                                         sumFar.Add(sum);
                                         sumFarOneMission.Add(sum);
@@ -607,6 +652,55 @@ namespace PrzegladarkaWynikow
                 {
                     sumsFar += i + ". " + "p: " + pillowsEach[i - 1] + " ; " + averageSumFarOneMission[i - 1] + "     ";
                 }
+
+                var csv = new StringBuilder();
+
+                string dateToExcel = "";
+                dateToExcel = this.Text.Replace('_', '-');
+                dateToExcel = dateToExcel.Remove(dateToExcel.Length - 7);
+                dateToExcel = dateToExcel.Remove(13, 1);
+                dateToExcel = dateToExcel.Insert(13, ":");
+                dateToExcel = dateToExcel.Remove(6, 2);
+
+                csv.AppendLine(dateToExcel);
+                //csv.AppendLine("avSumCloseWithout;avSumFarWithout;avSumCloseWith;avSumFarWith");
+                for (int i = 1; i <= averageSumCloseOneMission.Count; i++)
+                {
+                    string avSumCloseWithout = "";
+                    if (pillowsEach[i - 1] > 100 && averageSumCloseOneMission[i - 1] > 0f)
+                        avSumCloseWithout = averageSumCloseOneMission[i - 1].ToString();
+                    string avSumFarWithout = "";
+                    if (pillowsEach[i - 1] > 100 && averageSumFarOneMission[i - 1] > 0f)
+                        avSumFarWithout = averageSumFarOneMission[i - 1].ToString();
+                    string avSumCloseWith = "";
+                    if (pillowsEach[i - 1] < 100 && averageSumCloseOneMission[i - 1] > 0f)
+                        avSumCloseWith = averageSumCloseOneMission[i - 1].ToString();
+                    string avSumFarWith = "";
+                    if (pillowsEach[i - 1] < 100 && averageSumFarOneMission[i - 1] > 0f)
+                        avSumFarWith = averageSumFarOneMission[i - 1].ToString();
+
+                    string write = avSumCloseWithout + ";" + avSumFarWithout + ";" + avSumCloseWith + ";" + avSumFarWith;
+
+                    csv.AppendLine(write);
+                }
+
+                File.AppendAllText(@"D:\Studia\csvki\kryt_calkowe_pillows.csv", csv.ToString());
+
+
+                csv = new StringBuilder();
+                csv.AppendLine(dateToExcel);
+                //csv.AppendLine("avSumClose;avSumFar");
+
+                string avSumClose = "";
+                if (averageClose > 0f)
+                    avSumClose = averageClose.ToString();
+                string avSumFar = "";
+                if (averageFar > 0f)
+                    avSumFar = averageFar.ToString();
+
+                string writeAll = avSumClose + ";" + avSumFar;
+                csv.AppendLine(writeAll);
+                File.AppendAllText(@"D:\Studia\csvki\kryt_calkowe.csv", csv.ToString());
 
                 MessageBox.Show("average sum close: " + averageClose + "    average sum far: " + averageFar + "\n" + sumsClose + "\n" + sumsFar);
             }
@@ -714,26 +808,29 @@ namespace PrzegladarkaWynikow
                                 }
                                 else
                                 {
-                                    if (j != lengthSecond - 1)
-                                    {
-                                        timeFar.Add(timeCounter);
-                                        farOneMission.Add(timeCounter);
-                                    }
-                                    else if (j == lengthSecond - 1 && canEnter == false)
-                                    {
-                                        timeFar.Add(timeCounter);
-                                        farOneMission.Add(timeCounter);
-                                    }
+                                    if (targetNumber != 4)
+                                    { 
+                                        if (j != lengthSecond - 1)
+                                        {
+                                            timeFar.Add(timeCounter);
+                                            farOneMission.Add(timeCounter);
+                                        }
+                                        else if (j == lengthSecond - 1 && canEnter == false)
+                                        {
+                                            timeFar.Add(timeCounter);
+                                            farOneMission.Add(timeCounter);
+                                        }
 
-                                    if (j != lengthSecond - 1)
-                                    {
-                                        afterTimeFar.Add(timeAfterSetting);
-                                        afterFarOneMission.Add(timeAfterSetting);
-                                    }
-                                    else if (j == lengthSecond - 1 && timeAfterSetting != 0)
-                                    {
-                                        afterTimeFar.Add(timeAfterSetting);
-                                        afterFarOneMission.Add(timeAfterSetting);
+                                        if (j != lengthSecond - 1)
+                                        {
+                                            afterTimeFar.Add(timeAfterSetting);
+                                            afterFarOneMission.Add(timeAfterSetting);
+                                        }
+                                        else if (j == lengthSecond - 1 && timeAfterSetting != 0)
+                                        {
+                                            afterTimeFar.Add(timeAfterSetting);
+                                            afterFarOneMission.Add(timeAfterSetting);
+                                        }
                                     }
                                 }
                                 canEnter = true;
@@ -834,9 +931,181 @@ namespace PrzegladarkaWynikow
                     afterTimesFar += i + ". " + "p: " + pillowsEach[i - 1] + " ; " + averageAfterFarOneMission[i - 1] + " s     ";
                 }
 
-                MessageBox.Show("average close: " + averageClose + "    average far: " + averageFar + "\n" + timesClose + "\n" + timesFar + "\n\n"
-                    + "average after close: " + afterAverageClose + "    average after far: " + afterAverageFar + "\n" + afterTimesClose + "\n"
-                    + afterTimesFar);
+                #region pillows checking
+                float timesCloseWithoutPillows = 0f;
+                float counter = 0f;
+                for (int i = 1; i <= averageCloseOneMission.Count; i++)
+                {
+                    if (pillowsEach[i-1] > 100 && averageCloseOneMission[i-1] > 0f)
+                    {
+                        timesCloseWithoutPillows += averageCloseOneMission[i - 1];
+                        counter++;
+                    }
+                }
+                timesCloseWithoutPillows /= counter;
+
+                float timesFarWithoutPillows = 0f;
+                counter = 0f;
+                for (int i = 1; i <= averageFarOneMission.Count; i++)
+                {
+                    if (pillowsEach[i - 1] > 100 && averageFarOneMission[i - 1] > 0f)
+                    {
+                        timesFarWithoutPillows += averageFarOneMission[i - 1];
+                        counter++;
+                    }
+                }
+                timesFarWithoutPillows /= counter;
+
+                float timesCloseWithPillows = 0f;
+                counter = 0f;
+                for (int i = 1; i <= averageCloseOneMission.Count; i++)
+                {
+                    if (pillowsEach[i - 1] < 100 && averageCloseOneMission[i - 1] > 0f)
+                    {
+                        timesCloseWithPillows += averageCloseOneMission[i - 1];
+                        counter++;
+                    }
+                }
+                timesCloseWithPillows /= counter;
+
+                float timesFarWithPillows = 0f;
+                counter = 0f;
+                for (int i = 1; i <= averageFarOneMission.Count; i++)
+                {
+                    if (pillowsEach[i - 1] < 100 && averageFarOneMission[i - 1] > 0f)
+                    {
+                        timesFarWithPillows += averageFarOneMission[i - 1];
+                        counter++;
+                    }
+                }
+                timesFarWithPillows /= counter;
+
+                float afterTimesCloseWithoutPillows = 0f;
+                counter = 0f;
+                for (int i = 1; i <= averageAfterCloseOneMission.Count; i++)
+                {
+                    if (pillowsEach[i - 1] > 100 && averageAfterCloseOneMission[i - 1] > 0f)
+                    {
+                        afterTimesCloseWithoutPillows += averageAfterCloseOneMission[i - 1];
+                        counter++;
+                    }
+                }
+                afterTimesCloseWithoutPillows /= counter;
+
+                float afterTimesFarWithoutPillows = 0f;
+                counter = 0f;
+                for (int i = 1; i <= averageAfterFarOneMission.Count; i++)
+                {
+                    if (pillowsEach[i - 1] > 100 && averageAfterFarOneMission[i - 1] > 0f)
+                    {
+                        afterTimesFarWithoutPillows += averageAfterFarOneMission[i - 1];
+                        counter++;
+                    }
+                }
+                afterTimesFarWithoutPillows /= counter;
+
+                float afterTimesCloseWithPillows = 0f;
+                counter = 0f;
+                for (int i = 1; i <= averageAfterCloseOneMission.Count; i++)
+                {
+                    if (pillowsEach[i - 1] < 100 && averageAfterCloseOneMission[i - 1] > 0f)
+                    {
+                        afterTimesCloseWithPillows += averageAfterCloseOneMission[i - 1];
+                        counter++;
+                    }
+                }
+                afterTimesCloseWithPillows /= counter;
+
+                float afterTimesFarWithPillows = 0f;
+                counter = 0f;
+                for (int i = 1; i <= averageAfterFarOneMission.Count; i++)
+                {
+                    if (pillowsEach[i - 1] < 100 && averageAfterFarOneMission[i - 1] > 0f)
+                    {
+                        afterTimesFarWithPillows += averageAfterFarOneMission[i - 1];
+                        counter++;
+                    }
+                }
+                afterTimesFarWithPillows /= counter;
+                #endregion
+
+                var csv = new StringBuilder();
+
+                string dateToExcel = "";
+                dateToExcel = this.Text.Replace('_', '-');
+                dateToExcel = dateToExcel.Remove(dateToExcel.Length - 7);
+                dateToExcel = dateToExcel.Remove(13, 1);
+                dateToExcel = dateToExcel.Insert(13, ":");
+                dateToExcel = dateToExcel.Remove(6, 2);
+
+                csv.AppendLine(dateToExcel);
+                //csv.AppendLine("avCloseWithout;avFarWithout;avCloseWith;avFarWith;afterCloseWithout;afterFarWithout;afterCloseWith;afterFarWith");
+                for (int i = 1; i <= averageCloseOneMission.Count; i++)
+                {
+                    string avCloseWithout = "";
+                    if (pillowsEach[i - 1] > 100 && averageCloseOneMission[i - 1] > 0f)
+                        avCloseWithout = averageCloseOneMission[i - 1].ToString();
+                    string avFarWithout = "";
+                    if (pillowsEach[i - 1] > 100 && averageFarOneMission[i - 1] > 0f)
+                        avFarWithout = averageFarOneMission[i - 1].ToString();
+                    string avCloseWith = "";
+                    if (pillowsEach[i - 1] < 100 && averageCloseOneMission[i - 1] > 0f)
+                        avCloseWith = averageCloseOneMission[i - 1].ToString();
+                    string avFarWith = "";
+                    if (pillowsEach[i - 1] < 100 && averageFarOneMission[i - 1] > 0f)
+                        avFarWith = averageFarOneMission[i - 1].ToString();
+                    string afterCloseWithout = "";
+                    if (pillowsEach[i - 1] > 100 && averageAfterCloseOneMission[i - 1] > 0f)
+                        afterCloseWithout = averageAfterCloseOneMission[i - 1].ToString();
+                    string afterFarWithout = "";
+                    if (pillowsEach[i - 1] > 100 && averageAfterFarOneMission[i - 1] > 0f)
+                        afterFarWithout = averageAfterFarOneMission[i - 1].ToString();
+                    string afterCloseWith = "";
+                    if (pillowsEach[i - 1] < 100 && averageAfterCloseOneMission[i - 1] > 0f)
+                        afterCloseWith = averageAfterCloseOneMission[i - 1].ToString();
+                    string afterFarWith = "";
+                    if (pillowsEach[i - 1] < 100 && averageAfterFarOneMission[i - 1] > 0f)
+                        afterFarWith = averageAfterFarOneMission[i - 1].ToString();
+
+                    string write = avCloseWithout + ";" + avFarWithout + ";" + avCloseWith + ";" + avFarWith + ";" + afterCloseWithout + ";" + afterFarWithout + ";" + afterCloseWith + ";" + afterFarWith;
+
+                    if (write.Length > 7)
+                        csv.AppendLine(write);
+                }
+
+                File.AppendAllText(@"D:\Studia\csvki\czas_ustalania_pillows.csv", csv.ToString());
+
+                csv = new StringBuilder();
+                csv.AppendLine(dateToExcel);
+
+                //csv.AppendLine("avClose;avFar;afterAvClose;afterAvFar");
+                string avClose = "";
+                if (averageClose > 0f)
+                    avClose = averageClose.ToString();
+                string avFar = "";
+                if (averageFar > 0f)
+                    avFar = averageFar.ToString();
+                string afterAvClose = "";
+                if (afterAverageClose > 0f)
+                    afterAvClose = afterAverageClose.ToString();
+                string afterAvFar = "";
+                if (afterAverageFar > 0f)
+                    afterAvFar = afterAverageFar.ToString();
+
+                string writeAll = avClose+ ";" +avFar + ";" +afterAvClose + ";" +afterAvFar;
+
+                csv.AppendLine(writeAll);
+
+                File.AppendAllText(@"D:\Studia\csvki\czas_ustalania_sredni_z_calosci.csv", csv.ToString());
+
+                MessageBox.Show("average close: " + averageClose + "    average far: " + averageFar + "\n" + 
+                "average close without pillows: " + timesCloseWithoutPillows + "     average far without pillows: " + timesFarWithoutPillows + "\n" + 
+                "average close with pillows: " + timesCloseWithPillows + "     average far with pillows: " + timesFarWithPillows + "\n" + 
+                timesClose + "\n\n" + timesFar + "\n\n" +
+                "average after close: " + afterAverageClose + "    average after far: " + afterAverageFar + "\n" +
+                "average after close without pillows: " + afterTimesCloseWithoutPillows + "     average after far without pillows: " + afterTimesFarWithoutPillows + "\n" +
+                "average after close with pillows: " + afterTimesCloseWithPillows + "     average after far with pillows: " + afterTimesFarWithPillows + "\n" +
+                afterTimesClose + "\n\n" + afterTimesFar);
             }
             else
             {
