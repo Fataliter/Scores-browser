@@ -17,14 +17,16 @@ namespace PrzegladarkaWynikow
         {
             InitializeComponent();
             listBox1.Items.Clear();
-            string[] files = Directory.GetFiles(@"C:\Users\" + userName + @"\AppData\LocalLow\DefaultCompany\Archery\Wyniki");
+            if (Directory.Exists(Environment.CurrentDirectory + @"\Wyniki") == false)
+                Directory.CreateDirectory(Environment.CurrentDirectory + @"\Wyniki");
+            string[] files = Directory.GetFiles(Environment.CurrentDirectory + @"\Wyniki");
             foreach (string file in files)
             {
                 listBox1.Items.Add(Path.GetFileName(file));
             }
         }
         
-        string[][][] ReadDataNew()
+        string[][][] ReadData()
         {
             int[] counter = new int[5];
             string[][][] results = new string[5][][];
@@ -38,7 +40,7 @@ namespace PrzegladarkaWynikow
                         results[i][j][k] = "";
                 }
             }
-            StreamReader file = new System.IO.StreamReader(@"C:\Users\" + userName + @"\AppData\LocalLow\DefaultCompany\Archery\Wyniki\" + fileName);
+            StreamReader file = new System.IO.StreamReader(Environment.CurrentDirectory + @"\Wyniki\" + fileName);
             string wholeFile = file.ReadToEnd();
             string[] singleMission = wholeFile.Split('#');
             Array.Resize(ref singleMission, singleMission.Length - 1);
@@ -97,7 +99,7 @@ namespace PrzegladarkaWynikow
                             form1.Text = fileName;
                             form1.Show();
                             f1_text = fileName;
-                            dataToSplitOne = ReadDataNew();
+                            dataToSplitOne = ReadData();
                             f1 = true;
                         }
                         else if (!f2)
@@ -106,7 +108,7 @@ namespace PrzegladarkaWynikow
                             form2.Text = fileName;
                             form2.Show();
                             f2_text = fileName;
-                            dataToSplitTwo = ReadDataNew();
+                            dataToSplitTwo = ReadData();
                             f2 = true;
                         }
                         formCounter++;

@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using CsvHelper;
 
 namespace PrzegladarkaWynikow
 {
     public partial class Form2 : Form
     {
         public static int whichMission;
-        Button[] buttons = new Button[35];
         public static string[][] settingTime;
         public static string[][] pillowsTime;
         public static float[][][] pillowsPercentage;
@@ -25,6 +22,8 @@ namespace PrzegladarkaWynikow
 
         public static bool countFifteen = false;
 
+        Button[] buttons = new Button[35];
+
         public Form2()
         {
             InitializeComponent();
@@ -32,7 +31,7 @@ namespace PrzegladarkaWynikow
             this.WindowState = FormWindowState.Maximized;
         }
 
-        private void Check(string[][][] data)
+        private void CheckAmountOfGames(string[][][] data)
         {
             int length = 0;
             for (int i = 0; i < 35; i++)
@@ -76,27 +75,27 @@ namespace PrzegladarkaWynikow
             if (missionName == "Training")
             {
                 whichMission = 0;
-                Check(data);
+                CheckAmountOfGames(data);
             }
             else if (missionName == "Mission1")
             {
                 whichMission = 1;
-                Check(data);
+                CheckAmountOfGames(data);
             }
             else if (missionName == "Mission2")
             {
                 whichMission = 2;
-                Check(data);
+                CheckAmountOfGames(data);
             }
             else if (missionName == "Mission3")
             {
                 whichMission = 3;
-                Check(data);
+                CheckAmountOfGames(data);
             }
             else if (missionName == "Mission4")
             {
                 whichMission = 4;
-                Check(data);
+                CheckAmountOfGames(data);
             }
         }
 
@@ -271,10 +270,7 @@ namespace PrzegladarkaWynikow
                         bigDataGraph.Series["pressOnRearPillow"].Name = "Nacisk - tylna poduszka";
                         break;
                     case 12:
-                        dataGraph.Series.Add("targetAngleLeft");
-                        dataGraph.Series["targetAngleLeft"].BorderWidth = 1;
-                        dataGraph.Series["targetAngleLeft"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-                        dataGraph.Series["targetAngleLeft"].Color = Color.Red;
+                        AddSeries("targetAngleLeft");
                         for (int j = 0; j < dataLineSplitted.Length - 1; j++)
                         {
                             float dataToDrawFloat = float.Parse(dataLineSplitted[j].Replace(".", ","));
@@ -283,10 +279,7 @@ namespace PrzegladarkaWynikow
                         dataGraph.Series["targetAngleLeft"].Name = "Lewa strona celu";
                         break;
                     case 13:
-                        dataGraph.Series.Add("targetAngleRight");
-                        dataGraph.Series["targetAngleRight"].BorderWidth = 1;
-                        dataGraph.Series["targetAngleRight"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-                        dataGraph.Series["targetAngleRight"].Color = Color.Red;
+                        AddSeries("targetAngleRight");
                         for (int j = 0; j < dataLineSplitted.Length - 1; j++)
                         {
                             float dataToDrawFloat = float.Parse(dataLineSplitted[j].Replace(".", ","));
@@ -296,6 +289,14 @@ namespace PrzegladarkaWynikow
                         break;
                 }
             }
+        }
+
+        private void AddSeries(string series)
+        {
+            dataGraph.Series.Add(series);
+            dataGraph.Series[series].BorderWidth = 1;
+            dataGraph.Series[series].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            dataGraph.Series[series].Color = Color.Red;
         }
 
         private void Draw(string series, string[] dataSplitted)
@@ -388,6 +389,7 @@ namespace PrzegladarkaWynikow
                     float timeToStart = 0f;
                     for (int j = 0; j < lengthSecond; j++)
                     {
+                        // pominięcie pierwszych 15 sekund jeśli dane gromadzone były podczas pokazu fajerwerków na koniec misji
                         if (countFifteen)
                         {
                             if ((playerAngle[i] < 130 || playerAngle[i] > 150) && j == 0)
@@ -478,6 +480,7 @@ namespace PrzegladarkaWynikow
 
                     var csv = new StringBuilder();
 
+                    // przystosowanie nazwy pliku, aby była odczytana poprawnie przez narzędzie Microsoft Excel
                     if (i == 0)
                     {
                         dateToExcel = this.Text.Replace('_', '-');
@@ -575,6 +578,7 @@ namespace PrzegladarkaWynikow
 
                     for (int j = 0; j < lengthSecond - 1; j++)
                     {
+                        // pominięcie pierwszych 15 sekund jeśli dane gromadzone były podczas pokazu fajerwerków na koniec misji
                         if (countFifteen)
                         {
                             if ((playerAngleFloat[j] < 130 || playerAngleFloat[j] > 150) && j == 0)
@@ -594,6 +598,7 @@ namespace PrzegladarkaWynikow
                             }
                         }
 
+                        // pominięcie analizy podczas walki z przeciwnikami
                         if (targetFloat[j] < -5f || targetFloat[j] > 5f)
                         {
                             if (prevTarget != targetFloat[j] || j == lengthSecond - 2)
@@ -655,6 +660,7 @@ namespace PrzegladarkaWynikow
 
                 var csv = new StringBuilder();
 
+                // przystosowanie nazwy pliku, aby była odczytana poprawnie przez narzędzie Microsoft Excel
                 string dateToExcel = "";
                 dateToExcel = this.Text.Replace('_', '-');
                 dateToExcel = dateToExcel.Remove(dateToExcel.Length - 7);
@@ -758,6 +764,7 @@ namespace PrzegladarkaWynikow
 
                     for (int j = 0; j < lengthSecond; j++)
                     {
+                        // pominięcie pierwszych 15 sekund jeśli dane gromadzone były podczas pokazu fajerwerków na koniec misji
                         if (countFifteen)
                         {
                             if ((playerAngleFloat[j] < 130 || playerAngleFloat[j] > 150) && j == 0)
@@ -777,6 +784,7 @@ namespace PrzegladarkaWynikow
                             }
                         }
 
+                        // pominięcie analizy podczas walki z przeciwnikami
                         if (targetFloat[j] < -5f || targetFloat[j] > 5f)
                         {
                             if (prevTarget != targetFloat[j] || j == lengthSecond - 1)
@@ -1031,6 +1039,7 @@ namespace PrzegladarkaWynikow
 
                 var csv = new StringBuilder();
 
+                // przystosowanie nazwy pliku, aby była odczytana poprawnie przez narzędzie Microsoft Excel
                 string dateToExcel = "";
                 dateToExcel = this.Text.Replace('_', '-');
                 dateToExcel = dateToExcel.Remove(dateToExcel.Length - 7);
