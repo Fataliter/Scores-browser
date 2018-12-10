@@ -19,6 +19,8 @@ namespace PrzegladarkaWynikow
             listBox1.Items.Clear();
             if (Directory.Exists(Environment.CurrentDirectory + @"\Wyniki") == false)
                 Directory.CreateDirectory(Environment.CurrentDirectory + @"\Wyniki");
+            if (Directory.Exists(Environment.CurrentDirectory + @"\wyniki_csv") == false)
+                Directory.CreateDirectory(Environment.CurrentDirectory + @"\wyniki_csv");
             string[] files = Directory.GetFiles(Environment.CurrentDirectory + @"\Wyniki");
             foreach (string file in files)
             {

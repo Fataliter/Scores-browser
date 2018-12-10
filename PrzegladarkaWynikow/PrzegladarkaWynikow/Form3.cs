@@ -151,7 +151,7 @@ namespace PrzegladarkaWynikow
                 }
                 csv.AppendLine(pLeft+";"+pRight+";"+pRear);
 
-                File.AppendAllText(@"D:\Studia\csvki\procent_poduszek.csv", csv.ToString());
+                File.AppendAllText(Environment.CurrentDirectory + @"\wyniki_csv\procent_poduszek.csv", csv.ToString());
 
                 chartOne.Titles["Title"].Text = "Lewa Poduszka";
                 chartTwo.Titles["Title"].Text = "Prawa Poduszka";

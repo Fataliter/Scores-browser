@@ -530,7 +530,7 @@ namespace PrzegladarkaWynikow
                     }
                     csv.AppendLine(writeLeft + ";" + writeRight + ";" + writeRear);
 
-                    File.AppendAllText(@"D:\Studia\csvki\procent_poduszek_pillows.csv", csv.ToString());
+                    File.AppendAllText(Environment.CurrentDirectory + @"\wyniki_csv\procent_poduszek_pillows.csv", csv.ToString());
                 }
 
                 Form3 form3 = new Form3();
@@ -690,7 +690,7 @@ namespace PrzegladarkaWynikow
                     csv.AppendLine(write);
                 }
 
-                File.AppendAllText(@"D:\Studia\csvki\kryt_calkowe_pillows.csv", csv.ToString());
+                File.AppendAllText(Environment.CurrentDirectory + @"\wyniki_csv\kryt_calkowe_pillows.csv", csv.ToString());
 
 
                 csv = new StringBuilder();
@@ -706,7 +706,7 @@ namespace PrzegladarkaWynikow
 
                 string writeAll = avSumClose + ";" + avSumFar;
                 csv.AppendLine(writeAll);
-                File.AppendAllText(@"D:\Studia\csvki\kryt_calkowe.csv", csv.ToString());
+                File.AppendAllText(Environment.CurrentDirectory + @"\wyniki_csv\kryt_calkowe.csv", csv.ToString());
 
                 MessageBox.Show("average sum close: " + averageClose + "    average sum far: " + averageFar + "\n" + sumsClose + "\n" + sumsFar);
             }
@@ -1082,7 +1082,7 @@ namespace PrzegladarkaWynikow
                         csv.AppendLine(write);
                 }
 
-                File.AppendAllText(@"D:\Studia\csvki\czas_ustalania_pillows.csv", csv.ToString());
+                File.AppendAllText(Environment.CurrentDirectory + @"\wyniki_csv\czas_ustalania_pillows.csv", csv.ToString());
 
                 csv = new StringBuilder();
                 csv.AppendLine(dateToExcel);
@@ -1105,7 +1105,7 @@ namespace PrzegladarkaWynikow
 
                 csv.AppendLine(writeAll);
 
-                File.AppendAllText(@"D:\Studia\csvki\czas_ustalania_sredni_z_calosci.csv", csv.ToString());
+                File.AppendAllText(Environment.CurrentDirectory + @"\wyniki_csv\czas_ustalania_sredni_z_calosci.csv", csv.ToString());
 
                 MessageBox.Show("average close: " + averageClose + "    average far: " + averageFar + "\n" + 
                 "average close without pillows: " + timesCloseWithoutPillows + "     average far without pillows: " + timesFarWithoutPillows + "\n" + 
